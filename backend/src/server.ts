@@ -1,6 +1,6 @@
 import { createServer as createHttpServer } from 'http';
-import app from './app';
-import config, { STAGE } from './config';
+import config from './config';
+import { initRemotionSSR } from './core/media';
 
 export const { httpServer } = (() => {
   const PORT = config.app.port;
@@ -23,8 +23,22 @@ export const { httpServer } = (() => {
   });
 
   // Assign ExpressJs as request listener to the just created http server
-  app.set('port', PORT);
-  httpServer.on('request', app);
+  // as soon as some async modules have been loaded
+  onLoadedAsync(async () => {
+    const { default: app } = await import('./app');
+    app.set('port', PORT);
+    httpServer.on('request', app);
+  });
 
   return { httpServer };
 })();
+
+async function onLoadedAsync(callback: () => void) {
+  console.log('Initializing async modules...');
+
+  // Init Remotion
+  await initRemotionSSR();
+
+  callback();
+  console.log('Initialized async modules.');
+}

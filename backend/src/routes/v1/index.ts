@@ -1,5 +1,12 @@
-import routes from './v1.routes';
+import { Router } from 'express';
+import { STAGE } from '../../config';
+import { controllerWrapper } from '../../utils/controller-wrapper';
+import { testController } from './v1.controller';
+import renderRoutes from './render';
 
-export * from './v1.routes';
+const router = Router();
 
-export default routes;
+router.get('/test', controllerWrapper(testController, STAGE.LOCAL));
+router.use('/render', renderRoutes);
+
+export default router;
