@@ -26,6 +26,9 @@ const { app } = (() => {
     })
   );
 
+  // This setting will reveal the real IP address of the user, so we can apply rate limiting.
+  app.set('trust proxy', 1);
+
   // Rate Limiter Middleware
   app.use(rateLimiterMiddleware);
 

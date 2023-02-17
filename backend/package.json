@@ -7,7 +7,7 @@
     "build": "shx rm -rf dist && tsc",
     "start:dev": "nodemon --config ./nodemon.json",
     "start:dev:debug": "nodemon --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/index.ts",
-    "start:preview": "remotion preview ./src/core/media/remotion/index.ts --config ./src/core/media/remotion/remotion.config.ts",
+    "start:preview": "remotion preview ./src/core/media/remotion/render/index.ts --config ./src/core/media/remotion/remotion.config.ts",
     "prettier": "prettier --config .prettierrc --write \"**/*.{js,ts}\"",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "install:clean": "shx rm -rf dist && rm -rf node_modules && pnpm install",
