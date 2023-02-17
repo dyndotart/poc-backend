@@ -11,6 +11,7 @@ specifiers:
   '@types/helmet': ^4.0.0
   '@types/node': ^18.13.0
   '@types/react': ^18.0.28
+  '@types/web': ^0.0.91
   body-parser: ^1.20.1
   dotenv: ^16.0.3
   eslint: ^8.34.0
@@ -50,6 +51,7 @@ devDependencies:
   '@types/helmet': 4.0.0
   '@types/node': 18.13.0
   '@types/react': 18.0.28
+  '@types/web': 0.0.91
   eslint: 8.34.0
   nodemon: 2.0.20
   openapi-typescript: 6.1.0
@@ -666,6 +668,10 @@ packages:
     dependencies:
       '@types/mime': 3.0.1
       '@types/node': 18.13.0
+    dev: true
+
+  /@types/web/0.0.91:
+    resolution: {integrity: sha512-KIw/1SNDyzPMpN7JiS2TTmiKXUhg4vkV2b8ozgQV0aw82dZr1chPXyunxVbUjSHaDrLxQbD+xpVk+CXiVkakHg==}
     dev: true
 
   /@types/yauzl/2.10.0:
