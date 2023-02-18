@@ -1,4 +1,4 @@
-export enum GetTestParams {
+export enum RenderRawParams {
   compositionname,
   format,
 }

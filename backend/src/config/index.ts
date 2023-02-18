@@ -18,3 +18,4 @@ console.log(`Loaded Config based on '.env'`, { config });
 export default config;
 
 export * from './types';
+export { appConfig, spotifyConfig };

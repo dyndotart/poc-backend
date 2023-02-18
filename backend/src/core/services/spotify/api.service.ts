@@ -1,5 +1,5 @@
 import axios from 'axios';
-import spotifyConfig from '../../../config/spotify.config';
+import { spotifyConfig } from '../../../config';
 
 export const api = (() => {
   const clientId = spotifyConfig.auth.clientId;

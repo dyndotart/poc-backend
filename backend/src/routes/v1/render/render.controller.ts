@@ -7,18 +7,18 @@ import { getComposition, getWebpackBundleLocation } from '../../../core/media';
 import { getImageType, getMimeType } from '../../../core/media/remotion';
 import { hashObject } from '../../../utils/hash-object';
 import { sendFile } from '../../../utils/send-file';
-import { GetTestParams } from './types';
+import { RenderRawParams } from './types';
 
 const TEMP_DIR = fs.promises.mkdtemp(path.join(os.tmpdir(), 'remotion-'));
 
-export async function renderRemotion(
+export async function renderRawController(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   const inputProps = req.query;
-  const compName = req.params[GetTestParams.compositionname];
-  const imageFormat = getImageType(req.params[GetTestParams.format]);
+  const compName = req.params[RenderRawParams.compositionname];
+  const imageFormat = getImageType(req.params[RenderRawParams.format]);
 
   res.set('content-type', getMimeType(imageFormat));
 

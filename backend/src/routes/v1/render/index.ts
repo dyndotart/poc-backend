@@ -1,13 +1,13 @@
 import express, { Router } from 'express';
 import { controllerWrapper } from '../../../utils/controller-wrapper';
-import { renderRemotion } from './render.controller';
-import { GetTestParams } from './types';
+import { renderRawController } from './render.controller';
+import { RenderRawParams } from './types';
 
 const router = Router();
 
 router.get(
-  `/remotion/:${GetTestParams.compositionname}.:${GetTestParams.format}(png|jpe?g)`,
-  controllerWrapper(renderRemotion)
+  `/raw/:${RenderRawParams.compositionname}.:${RenderRawParams.format}(png|jpe?g)`,
+  controllerWrapper(renderRawController)
 );
 router.use(
   '/info',
