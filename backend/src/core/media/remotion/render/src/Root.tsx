@@ -1,4 +1,5 @@
 import { Still } from 'remotion';
+import Map from './stills/Map';
 import PreviewCard from './stills/PreviewCard';
 import './style.css';
 
@@ -16,6 +17,7 @@ export const RemotionRoot: React.FC = () => {
           slogan: 'Make videos\nprogrammatically',
         }}
       />
+      <Still id="Map" component={Map} width={1200} height={627} />
     </>
   );
 };

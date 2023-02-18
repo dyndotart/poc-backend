@@ -4,10 +4,7 @@ const path = require('path');
 module.exports = {
   content: [
     './render/**/*.{js,jsx,ts,tsx}',
-    path.join(
-      './src/core/media/remotion/render',
-      'render/**/*.{js,jsx,ts,tsx}'
-    ),
+    './src/core/media/remotion/render/src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     extend: {},
