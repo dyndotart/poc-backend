@@ -12,5 +12,6 @@
     },
     "eslint.workingDirectories": [
         "./backend"
-    ]
+    ],
+    "files.associations": { "*.scss": "postcss" }
 }

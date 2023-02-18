@@ -1,11 +1,11 @@
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import config from './config';
 import logger from 'morgan';
-import { rateLimiterMiddleware } from './middlewares/security/rate-limiter-middleware';
-import bodyParser from 'body-parser';
+import config from './config';
 import errorMiddlewares from './middlewares/error';
+import { rateLimiterMiddleware } from './middlewares/security/rate-limiter-middleware';
 import routes from './routes';
 
 // Init Express App

@@ -3,6 +3,8 @@
 // ! The configuration file does only apply if you render via the CLI !
 
 import { Config } from 'remotion';
+import { webpackOverride } from './src/webpack-override';
 
 Config.setImageFormat('png');
 Config.setOverwriteOutput(true);
+Config.overrideWebpackConfig(webpackOverride);

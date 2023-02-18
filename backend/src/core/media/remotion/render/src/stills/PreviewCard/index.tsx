@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import './fonts.css';
 import Swirl from './components/Swirl';
+import './fonts.css';
 
 const fontFamily = 'Inter';
 
@@ -11,7 +11,7 @@ const PreviewCard: React.FC<{
   slogan: string;
 }> = ({ title, description, slogan }) => {
   return (
-    <AbsoluteFill style={absContainer}>
+    <div className="bg-red-900">
       <AbsoluteFill>
         <div style={container}>
           <div style={titleStyle}>
@@ -24,15 +24,11 @@ const PreviewCard: React.FC<{
       <AbsoluteFill>
         <Swirl />
       </AbsoluteFill>
-    </AbsoluteFill>
+    </div>
   );
 };
 
 export default PreviewCard;
-
-const absContainer: React.CSSProperties = {
-  backgroundColor: 'white',
-};
 
 const container: React.CSSProperties = {
   flex: 1,

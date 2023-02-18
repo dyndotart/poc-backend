@@ -19,5 +19,7 @@ module.exports = {
     'no-var': ERROR,
     '@typescript-eslint/no-empty-function': WARNING,
     'prefer-const': WARNING,
+    'no-undef': OFF,
+    '@typescript-eslint/no-var-requires': WARNING,
   },
 };

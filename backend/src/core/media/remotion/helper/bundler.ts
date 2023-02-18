@@ -1,5 +1,6 @@
 import { bundle } from '@remotion/bundler';
 import path from 'path';
+import { webpackOverride } from '../webpack-override';
 
 const ENTRY = './render/index';
 
@@ -16,7 +17,7 @@ export const { getWebpackBundleLocation, initRemotionSSR } = (() => {
     // Load Remotion Webpack bundle
     const remotionPath = path.resolve(path.join(__dirname, ENTRY));
     const bundleLocation = await bundle(remotionPath, () => undefined, {
-      webpackOverride: (config) => config,
+      webpackOverride: (config) => webpackOverride(config),
     });
 
     console.log(

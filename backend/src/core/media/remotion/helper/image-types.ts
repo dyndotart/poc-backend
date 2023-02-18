@@ -1,4 +1,4 @@
-import { AppError } from '../../../middlewares/error';
+import { AppError } from '../../../../middlewares/error';
 
 type ImageFormat = 'png' | 'jpeg';
 

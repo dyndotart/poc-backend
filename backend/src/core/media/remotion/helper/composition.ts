@@ -1,5 +1,5 @@
 import { getCompositions } from '@remotion/renderer';
-import { getWebpackBundleLocation } from './bundle';
+import { getWebpackBundleLocation } from './bundler';
 
 export async function getComposition(compName: string, inputProps: unknown) {
   const comps = await getCompositions(await getWebpackBundleLocation(), {

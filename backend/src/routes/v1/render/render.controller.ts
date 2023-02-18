@@ -1,16 +1,13 @@
-import express from 'express';
-import { getComposition, getWebpackBundleLocation } from '../../../core/media';
-import {
-  getImageType,
-  getMimeType,
-} from '../../../core/media/remotion/image-types';
-import { GetTestParams } from './types';
 import { renderStill } from '@remotion/renderer';
-import path from 'path';
+import express from 'express';
 import fs from 'fs';
 import os from 'os';
-import { sendFile } from '../../../utils/send-file';
+import path from 'path';
+import { getComposition, getWebpackBundleLocation } from '../../../core/media';
+import { getImageType, getMimeType } from '../../../core/media/remotion';
 import { hashObject } from '../../../utils/hash-object';
+import { sendFile } from '../../../utils/send-file';
+import { GetTestParams } from './types';
 
 const TEMP_DIR = fs.promises.mkdtemp(path.join(os.tmpdir(), 'remotion-'));
 
@@ -34,6 +31,7 @@ export async function renderRemotion(
     })
   );
 
+  // Render image
   const output = path.join(await TEMP_DIR, hash);
   const webpackBundleLocation = await getWebpackBundleLocation();
   const composition = await getComposition(compName, inputProps);
@@ -45,7 +43,10 @@ export async function renderRemotion(
     imageFormat,
   });
 
+  // Send image to client
   await sendFile(res, fs.createReadStream(output));
+
+  // Cache sent image
   // await saveToCache(hash, await fs.promises.readFile(output));
   await fs.promises.unlink(output);
 }
