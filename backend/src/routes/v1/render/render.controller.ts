@@ -50,3 +50,12 @@ export async function renderRawController(
   // await saveToCache(hash, await fs.promises.readFile(output));
   await fs.promises.unlink(output);
 }
+
+export async function renderSpotifyTrackPlayerController(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  // TODO
+  res.send(200);
+}

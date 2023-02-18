@@ -1,14 +1,19 @@
 import express, { Router } from 'express';
+import { STAGE } from '../../../config';
 import { controllerWrapper } from '../../../utils/controller-wrapper';
-import { renderRawController } from './render.controller';
+import {
+  renderRawController,
+  renderSpotifyTrackPlayerController,
+} from './render.controller';
 import { RenderRawParams } from './types';
 
 const router = Router();
 
 router.get(
   `/raw/:${RenderRawParams.compositionname}.:${RenderRawParams.format}(png|jpe?g)`,
-  controllerWrapper(renderRawController)
+  controllerWrapper(renderRawController, STAGE.DEV)
 );
+router.get(`/spotify`, controllerWrapper(renderSpotifyTrackPlayerController));
 router.use(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
