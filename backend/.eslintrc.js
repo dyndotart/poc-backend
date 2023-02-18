@@ -12,7 +12,11 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
     // '@remotion',
+    'plugin:tailwindcss-jsx/recommended',
   ],
+  settings: {
+    tailwindConfigPath: './src/core/media/remotion/render/tailwind.config.js',
+  },
   ignorePatterns: ['.eslintrc.js'], // https://stackoverflow.com/questions/63002127/parsing-error-parseroptions-project-has-been-set-for-typescript-eslint-parser
   rules: {
     'no-console': WARNING,

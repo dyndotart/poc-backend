@@ -1,6 +1,7 @@
 import { Still } from 'remotion';
 import Map from './stills/Map';
 import PreviewCard from './stills/PreviewCard';
+import Spotify from './stills/Spotify';
 import './style.css';
 
 export const RemotionRoot: React.FC = () => {
@@ -18,6 +19,7 @@ export const RemotionRoot: React.FC = () => {
         }}
       />
       <Still id="Map" component={Map} width={1200} height={627} />
+      <Still id="Spotify" component={Spotify} width={599} height={847} />
     </>
   );
 };
