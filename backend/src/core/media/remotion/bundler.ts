@@ -1,8 +1,8 @@
 import { bundle } from '@remotion/bundler';
 import path from 'path';
-import { webpackOverride } from '../webpack-override';
+import { webpackOverride } from './render/src/webpack-override';
 
-const ENTRY = './render/index';
+const ENTRY = './render/src/index';
 
 export const { getWebpackBundleLocation, initRemotionSSR } = (() => {
   let webpackBundleLocation: string | null = null;
