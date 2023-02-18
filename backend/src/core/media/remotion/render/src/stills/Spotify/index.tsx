@@ -1,10 +1,18 @@
 import React from 'react';
 import { Img } from 'remotion';
 import spotifyImage from './assets/spotify.png';
+import BackSvg from './components/BackSvg';
 import HeartSvg from './components/HeartSvg';
+import PlaySvg from './components/PlaySvg';
+import RepeatSvg from './components/RepeatSvg';
+import ShuffleSvg from './components/ShuffleSvg';
+import SkipSvg from './components/SkipSvg';
+import { formatDuration, getSliderBackgroundSize } from './service';
 import './styles.css';
 
-const Spotify: React.FC = () => {
+const Spotify: React.FC<TProps> = (props) => {
+  const { title, subtitle, time } = props;
+
   return (
     <div className={'h-full w-full bg-[#131212] p-16'}>
       <Img src={spotifyImage} />
@@ -15,14 +23,14 @@ const Spotify: React.FC = () => {
         <div className={'flex flex-row items-center justify-between'}>
           <div>
             <p className={'font-[Montserrat] text-3xl font-bold text-white'}>
-              You Song Title Here
+              {title}
             </p>
             <p
               className={
                 'mt-1 font-[Montserrat] text-base font-normal text-[#B3B3B3]'
               }
             >
-              Lucas Requena, Ibai LIanos, ortoPilot
+              {subtitle}
             </p>
           </div>
           <HeartSvg />
@@ -32,23 +40,36 @@ const Spotify: React.FC = () => {
         <div className={'mt-2 w-full'}>
           <input
             type="range"
-            min={1}
-            max={100}
-            value={50}
+            min={0}
+            max={time.total}
+            value={time.current}
             className={'slider'}
+            style={getSliderBackgroundSize(time.current, time.total)}
           />
-          <div className={'flex w-full justify-between'}>
+          <div className={'flex w-full items-center justify-between'}>
             <span
               className={'font-[Montserrat] text-sm font-bold text-[#B3B3B3]'}
             >
-              0:06
+              {formatDuration(time.current)}
             </span>
             <span
               className={'font-[Montserrat] text-sm font-bold text-[#B3B3B3]'}
             >
-              3:09
+              {formatDuration(time.total)}
             </span>
           </div>
+        </div>
+
+        <div
+          className={'mt-4 flex w-full flex-row items-center justify-between'}
+        >
+          <ShuffleSvg />
+          <div className={'flex flex-row items-center'}>
+            <SkipSvg />
+            <PlaySvg className={'mx-8'} />
+            <BackSvg />
+          </div>
+          <RepeatSvg />
         </div>
       </div>
     </div>
@@ -56,3 +77,12 @@ const Spotify: React.FC = () => {
 };
 
 export default Spotify;
+
+type TProps = {
+  title: string;
+  subtitle: string;
+  time: {
+    total: number;
+    current: number;
+  };
+};

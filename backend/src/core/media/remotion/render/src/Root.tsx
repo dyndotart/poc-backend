@@ -19,7 +19,20 @@ export const RemotionRoot: React.FC = () => {
         }}
       />
       <Still id="Map" component={Map} width={1200} height={627} />
-      <Still id="Spotify" component={Spotify} width={599} height={847} />
+      <Still
+        id="Spotify"
+        component={Spotify}
+        width={599}
+        height={847}
+        defaultProps={{
+          title: 'Your Song Title Here',
+          subtitle: 'Lucas Requena, Ibai LIanos, ortoPilot',
+          time: {
+            total: 180,
+            current: 34,
+          },
+        }}
+      />
     </>
   );
 };
