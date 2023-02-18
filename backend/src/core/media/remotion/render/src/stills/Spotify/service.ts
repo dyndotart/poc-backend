@@ -21,3 +21,10 @@ export function formatDuration(duration: number) {
 export function getSliderBackgroundSize(current: number, total: number) {
   return { backgroundSize: `${(current * 100) / total}% 100%` };
 }
+
+export function getSpotifyCodeUrl(options: {
+  backgroundColor: string;
+  trackId: string;
+}) {
+  return `https://scannables.scdn.co/uri/plain/svg/${options.backgroundColor}/white/640/spotify:track:${options.trackId}`;
+}

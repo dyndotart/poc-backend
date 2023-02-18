@@ -7,11 +7,15 @@ import PlaySvg from './components/PlaySvg';
 import RepeatSvg from './components/RepeatSvg';
 import ShuffleSvg from './components/ShuffleSvg';
 import SkipSvg from './components/SkipSvg';
-import { formatDuration, getSliderBackgroundSize } from './service';
+import {
+  formatDuration,
+  getSliderBackgroundSize,
+  getSpotifyCodeUrl,
+} from './service';
 import './styles.css';
 
 const Spotify: React.FC<TProps> = (props) => {
-  const { title, subtitle, time } = props;
+  const { title, subtitle, time, spotifyCode, trackId } = props;
 
   return (
     <div className={'h-full w-full bg-[#131212] p-16'}>
@@ -60,6 +64,7 @@ const Spotify: React.FC<TProps> = (props) => {
           </div>
         </div>
 
+        {/* Controls */}
         <div
           className={'mt-4 flex w-full flex-row items-center justify-between'}
         >
@@ -71,6 +76,19 @@ const Spotify: React.FC<TProps> = (props) => {
           </div>
           <RepeatSvg />
         </div>
+
+        {/* Spotify Code */}
+        {spotifyCode && (
+          <div className={'mt-4 flex w-full items-center justify-center'}>
+            <img
+              src={getSpotifyCodeUrl({
+                backgroundColor: '131212',
+                trackId,
+              })}
+              className={'h-12'}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -85,4 +103,6 @@ type TProps = {
     total: number;
     current: number;
   };
+  spotifyCode: boolean;
+  trackId: string;
 };
