@@ -1,20 +1,20 @@
 import { Still } from 'remotion';
-import Map from './stills/Map';
-import Spotify from './stills/Spotify';
+import CityMapV1 from './stills/city-map-v1';
+import SpotifyPlayerV1 from './stills/spotify-player-v1';
 import './style.css';
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Still id="Map" component={Map} width={1200} height={627} />
+      <Still id="city-map-v1" component={CityMapV1} width={1200} height={627} />
       <Still
-        id="spotify-track-player"
-        component={Spotify}
+        id="spotify-player-v1"
+        component={SpotifyPlayerV1}
         width={599}
         height={847}
         defaultProps={{
           title: 'Your Song Title Here',
-          subtitle: 'Lucas Requena, Ibai LIanos, ortoPilot',
+          subtitle: 'This is a subtitle',
           time: {
             total: 180,
             current: 34,

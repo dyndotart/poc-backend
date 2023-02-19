@@ -14,7 +14,7 @@ import {
 } from './service';
 import './styles.css';
 
-const Spotify: React.FC<TProps> = (props) => {
+const SpotifyPlayerV1: React.FC<TProps> = (props) => {
   const { title, subtitle, time, spotifyCode, trackId } = props;
 
   return (
@@ -94,7 +94,7 @@ const Spotify: React.FC<TProps> = (props) => {
   );
 };
 
-export default Spotify;
+export default SpotifyPlayerV1;
 
 type TProps = {
   title: string;
