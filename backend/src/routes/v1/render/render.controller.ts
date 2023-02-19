@@ -1,68 +1,97 @@
-import { renderStill } from '@remotion/renderer';
 import express from 'express';
 import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import { getComposition, getWebpackBundleLocation } from '../../../core/media';
-import { getImageType, getMimeType } from '../../../core/media/remotion';
+import { renderByCompositionName } from '../../../core/media';
 import { spotifyApi } from '../../../core/services/spotify/api.service';
 import { AppError } from '../../../middlewares/error';
-import { hashObject } from '../../../utils/hash-object';
+import { getImageType, getMimeType } from '../../../utils/image-types';
+import { randomNumber } from '../../../utils/random';
 import { sendFile } from '../../../utils/send-file';
 import { RenderRawParams } from './types';
 
-const TEMP_DIR = fs.promises.mkdtemp(path.join(os.tmpdir(), 'remotion-'));
-
 export async function renderRawController(
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) {
   const inputProps = req.query;
-  const compName = req.params[RenderRawParams.compositionname];
+  const compositionName = req.params[RenderRawParams.compositionname];
   const imageFormat = getImageType(req.params[RenderRawParams.format]);
+  if (imageFormat == null)
+    throw new AppError(
+      400,
+      'Invalid image format - your URL path should end in .png or .jpeg!'
+    );
+  const mimeType = getMimeType(imageFormat);
 
-  res.set('content-type', getMimeType(imageFormat));
-
-  // Calculate a unique identifier for the image
-  const hash = hashObject(
-    JSON.stringify({
-      compName,
-      imageFormat,
-      inputProps,
-    })
-  );
+  // Set up headers
+  res.set('content-type', mimeType);
 
   // Render image
-  const output = path.join(await TEMP_DIR, hash);
-  const webpackBundleLocation = await getWebpackBundleLocation();
-  const composition = await getComposition(compName, inputProps);
-  await renderStill({
-    composition,
-    serveUrl: webpackBundleLocation,
-    output,
-    inputProps,
+  const { outputPath, clear } = await renderByCompositionName(
+    compositionName,
     imageFormat,
-  });
+    inputProps
+  );
 
   // Send image to client
-  await sendFile(res, fs.createReadStream(output));
+  await sendFile(res, fs.createReadStream(outputPath));
 
-  // Cache sent image
+  // TODO Cache sent image
   // await saveToCache(hash, await fs.promises.readFile(output));
-  await fs.promises.unlink(output);
+
+  await clear();
 }
 
 export async function renderSpotifyTrackPlayerController(
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) {
-  const tracks = await spotifyApi.search('Missing Piece', 'Vance Joy');
-  if (tracks.length <= 0) {
-    throw new AppError(404, 'No track found!');
+  const inputProps = req.query;
+  const imageFormat = getImageType(req.params[RenderRawParams.format]);
+  if (imageFormat == null)
+    throw new AppError(
+      400,
+      'Invalid image format - your URL path should end in .png or .jpeg!'
+    );
+  const trackName = inputProps?.track;
+  const artistName = inputProps?.artist;
+  if (typeof trackName !== 'string' || typeof artistName !== 'string') {
+    throw new AppError(400, 'Invalid track or artist provided!');
   }
 
-  // TODO
-  res.send(200);
+  const mimeType = getMimeType(imageFormat);
+  const tracks = await spotifyApi.search(trackName, artistName);
+  if (tracks.length <= 0) {
+    throw new AppError(
+      404,
+      `No track found at track: '${trackName}', artist: '${artistName}'!`
+    );
+  }
+  const track = tracks[0];
+
+  // Set up headers
+  res.set('content-type', mimeType);
+
+  // Render image
+  const { outputPath, clear } = await renderByCompositionName(
+    'spotify-track-player',
+    imageFormat,
+    {
+      title: trackName,
+      subtitle: artistName,
+      time: {
+        total: track.duration_ms / 1000,
+        current: randomNumber(
+          track.duration_ms / 1000 / 10,
+          track.duration_ms / 1000
+        ),
+      },
+      spotifyCode: true,
+      trackId: track.id,
+    }
+  );
+
+  // Send image to client
+  await sendFile(res, fs.createReadStream(outputPath));
+
+  await clear();
 }

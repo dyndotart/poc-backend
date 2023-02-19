@@ -13,7 +13,10 @@ router.get(
   `/raw/:${RenderRawParams.compositionname}.:${RenderRawParams.format}(png|jpe?g)`,
   controllerWrapper(renderRawController, STAGE.DEV)
 );
-router.get(`/spotify`, controllerWrapper(renderSpotifyTrackPlayerController));
+router.get(
+  `/spotify.:${RenderRawParams.format}(png|jpe?g)`,
+  controllerWrapper(renderSpotifyTrackPlayerController)
+);
 router.use(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
