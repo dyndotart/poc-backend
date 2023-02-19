@@ -5,6 +5,8 @@ import os from 'os';
 import path from 'path';
 import { getComposition, getWebpackBundleLocation } from '../../../core/media';
 import { getImageType, getMimeType } from '../../../core/media/remotion';
+import { spotifyApi } from '../../../core/services/spotify/api.service';
+import { AppError } from '../../../middlewares/error';
 import { hashObject } from '../../../utils/hash-object';
 import { sendFile } from '../../../utils/send-file';
 import { RenderRawParams } from './types';
@@ -56,6 +58,11 @@ export async function renderSpotifyTrackPlayerController(
   res: express.Response,
   next: express.NextFunction
 ) {
+  const tracks = await spotifyApi.search('Missing Piece', 'Vance Joy');
+  if (tracks.length <= 0) {
+    throw new AppError(404, 'No track found!');
+  }
+
   // TODO
   res.send(200);
 }

@@ -8,17 +8,17 @@ export function controllerWrapper(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
-  ) => void,
+  ) => Promise<void>,
   stage?: STAGE
 ) {
-  return (
+  return async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
     try {
       if (!stage || appConfig.stage === stage) {
-        controller(req, res, next);
+        await controller(req, res, next);
       } else {
         throw new AppError(404);
       }
