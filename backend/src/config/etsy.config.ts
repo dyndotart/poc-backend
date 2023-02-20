@@ -7,7 +7,7 @@ export default {
   auth: {
     keyString,
     sharedSecret,
-    endpoint: 'https://accounts.spotify.com/api/token',
+    endpoint: 'https://api.etsy.com/v3/public/oauth/token',
   },
   baseUrl: 'https://openapi.etsy.com/v3/',
 };

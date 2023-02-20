@@ -6,11 +6,13 @@ dotenv.config({ path: `.env` });
 
 // Import Configs
 import appConfig from './app.config';
+import etsyConfig from './etsy.config';
 import spotifyConfig from './spotify.config';
 
 export const config = {
   app: appConfig,
   spotify: spotifyConfig,
+  etsy: etsyConfig,
 };
 
 console.log(`Loaded Config based on '.env'`, { config });
