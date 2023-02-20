@@ -1,6 +1,4 @@
 import React from 'react';
-import { Img } from 'remotion';
-import spotifyImage from './assets/spotify.png';
 import BackSvg from './components/BackSvg';
 import HeartSvg from './components/HeartSvg';
 import PlaySvg from './components/PlaySvg';
@@ -15,11 +13,11 @@ import {
 import './styles.css';
 
 const SpotifyPlayerV1: React.FC<TProps> = (props) => {
-  const { title, subtitle, time, spotifyCode, trackId } = props;
+  const { title, subtitle, time, spotifyCode, trackId, imageUrl } = props;
 
   return (
     <div className={'h-full w-full bg-[#131212] p-16'}>
-      <Img src={spotifyImage} />
+      <img src={imageUrl} />
 
       {/* Content */}
       <div className={'mt-6'}>
@@ -105,4 +103,5 @@ type TProps = {
   };
   spotifyCode: boolean;
   trackId: string;
+  imageUrl: string;
 };

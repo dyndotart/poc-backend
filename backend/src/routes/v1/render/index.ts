@@ -2,8 +2,9 @@ import express, { Router } from 'express';
 import { STAGE } from '../../../config';
 import { controllerWrapper } from '../../../utils/controller-wrapper';
 import {
+  renderCityMapController,
   renderRawController,
-  renderSpotifyTrackPlayerController,
+  renderSpotifyPlayerController,
 } from './render.controller';
 import { RenderRawParams } from './types';
 
@@ -15,8 +16,9 @@ router.get(
 );
 router.get(
   `/spotify.:${RenderRawParams.format}(png|jpe?g)`,
-  controllerWrapper(renderSpotifyTrackPlayerController)
+  controllerWrapper(renderSpotifyPlayerController)
 );
+router.get(`/map`, controllerWrapper(renderCityMapController));
 router.use(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
