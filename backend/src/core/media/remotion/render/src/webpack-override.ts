@@ -37,6 +37,8 @@ export const webpackOverride: WebpackOverrideFn = (currentConfiguration) => {
             },
           ],
         },
+        // https://stackoverflow.com/questions/49437048/module-parse-failed-unexpected-token-m-in-json-at-position-0
+        // { test: /\.json$/, loader: 'json-loader' },
       ],
     },
   };

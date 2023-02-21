@@ -1,4 +1,5 @@
 import { Still } from 'remotion';
+import geojson from './resources/sampleGeoJson.json';
 import CityMapV1 from './stills/city-map-v1';
 import SpotifyPlayerV1 from './stills/spotify-player-v1';
 import './style.css';
@@ -6,7 +7,15 @@ import './style.css';
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Still id="city-map-v1" component={CityMapV1} width={1200} height={627} />
+      <Still
+        id="city-map-v1"
+        component={CityMapV1}
+        width={1200}
+        height={627}
+        defaultProps={{
+          geojson: geojson as any,
+        }}
+      />
       <Still
         id="spotify-player-v1"
         component={SpotifyPlayerV1}
