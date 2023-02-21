@@ -47,6 +47,7 @@ specifiers:
   tailwindcss: ^3.2.7
   ts-node: ^10.9.1
   typescript: ^4.9.5
+  vector-tile-esm: ^2.1.4
 
 dependencies:
   '@remotion/bundler': 3.3.44_biqbaboplfbrettd7655fr4n2y
@@ -74,6 +75,7 @@ dependencies:
   remotion: 3.3.44_biqbaboplfbrettd7655fr4n2y
   style-loader: 3.3.1
   tailwindcss: 3.2.7_aesdjsunmf4wiehhujt67my7tu
+  vector-tile-esm: 2.1.4
 
 devDependencies:
   '@remotion/eslint-config': 3.3.44_7kw3g6rralp5ps6mg3uyzz6azm
@@ -5375,6 +5377,10 @@ packages:
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /vector-tile-esm/2.1.4:
+    resolution: {integrity: sha512-EUP1c/Usp5Y1OjuldEmstRzb7Vxk9BlZaxle3Wd5UqSr77Nj7HKG5WiD6OL93ytYxdeyPYMFEXe7h3Hcfx2SKA==}
     dev: false
 
   /watchpack/2.4.0:

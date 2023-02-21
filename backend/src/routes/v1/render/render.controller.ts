@@ -1,13 +1,15 @@
-import axios from 'axios';
 import express from 'express';
 import fs from 'fs';
 import { renderByCompositionName } from '../../../core/media';
+import { mapTilerApi } from '../../../core/services/map/maptiler/api.service';
 import { spotifyApi } from '../../../core/services/spotify/api.service';
 import { AppError } from '../../../middlewares/error';
 import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
 import { sendFile } from '../../../utils/send-file';
 import { RenderRawParams } from './types';
+// @ts-ignore
+import { VectorTile } from 'vector-tile-esm';
 
 export async function renderRawController(
   req: express.Request,
@@ -101,50 +103,22 @@ export async function renderCityMapController(
   req: express.Request,
   res: express.Response
 ) {
-  const minLon = 0.3203751;
-  const maxLon = 0.3340155;
-  const minLat = 51.2867602;
-  const maxLat = 51.2918741;
-  const bbox = [minLon, minLat, maxLon, maxLat].join(',');
+  const vectorTileBuffer = await mapTilerApi.getVectorTileAsPBF(165, 396, 10);
+  const tileMVT = new VectorTile(vectorTileBuffer);
+  const geoJson = mvtToGeoJson(tileMVT);
 
-  // Open Street Map
-  // Limited to bound box size of 0.25
-  // Limited to 5000 nodes in this boundbox
-  // const osmResponse = await axios.get(
-  //   `https://api.openstreetmap.org/api/0.6/map?bbox=${bbox}`
-  // );
-  // const osmData = osmResponse.data;
-
-  // Overpass API
-  // https://overpass-turbo.eu/
-  const query = `
-    [out:json][timeout:90];
-    {{geocodeArea:LaPaz}}->.searchArea;
-    (
-      way["building"](area.searchArea);
-      way["highway"](area.searchArea);
-    );
-    out body;
-    >;
-    out skel qt;
-  `;
-  const formData = new URLSearchParams();
-  formData.append('data', query);
-  const opResponse = await axios.post(
-    'https://overpass-api.de/api/interpreter',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }
-  );
-  const opData = opResponse.data;
-
-  // console.log({ osmData, opData });
+  console.log({ geoJson });
 
   // const jsondata = osmtogeojson(xmlData);
 
   // res.send(jsondata);
   res.send(200);
+}
+
+function mvtToGeoJson(mvt: any, tileSize = 512) {
+  const layers: any = {};
+  Object.values(mvt.layers).forEach((layer: any) => {
+    layers[layer.name] = layer.toGeoJSON(tileSize);
+  });
+  return layers;
 }
