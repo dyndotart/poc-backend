@@ -1,0 +1,1 @@
+These styles are [OSM-Styles](https://openmaptiles.org/styles/)
