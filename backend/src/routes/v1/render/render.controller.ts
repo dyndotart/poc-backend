@@ -1,10 +1,8 @@
-import { VectorTile } from '@mapbox/vector-tile';
 import express from 'express';
 import fs from 'fs';
-import { FeatureCollection } from 'geojson';
 import { renderByCompositionName } from '../../../core/media';
-import { mapTilerApi } from '../../../core/services/map/maptiler/api.service';
-import { spotifyApi } from '../../../core/services/spotify/api.service';
+import { mapService } from '../../../core/services/map';
+import { spotifyService } from '../../../core/services/spotify';
 import { AppError } from '../../../middlewares/error';
 import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
@@ -62,7 +60,7 @@ export async function renderSpotifyPlayerController(
   }
 
   const mimeType = getMimeType(imageFormat);
-  const tracks = await spotifyApi.search(trackName, artistName);
+  const tracks = await spotifyService.searchTrackByName(trackName, artistName);
   if (tracks.length <= 0) {
     throw new AppError(
       404,
@@ -103,32 +101,22 @@ export async function renderCityMapController(
   req: express.Request,
   res: express.Response
 ) {
-  const vectorTileBuffer = await mapTilerApi.getVectorTileAsPBF(165, 396, 10);
-  if (vectorTileBuffer == null)
-    throw new AppError(500, 'Failed to resolve buffer!');
-  const tileMVT = new VectorTile(vectorTileBuffer);
-  const geoJson = mvtToGeoJson(tileMVT);
+  const geoJsonTile = await mapService.getGeoJsonTile({
+    x: 165,
+    y: 396,
+    z: 10,
+  });
+  if (geoJsonTile == null) throw new AppError(500, 'Failed query Vector Tile!');
 
-  console.log({ geoJson });
+  // TODO extend Vector Tile with the x, y and z
+
+  console.log({ geoJsonTile });
 
   // const jsondata = osmtogeojson(xmlData);
 
   // res.send(jsondata);
-  res.send(geoJson);
-}
-
-function mvtToGeoJson(mvt: VectorTile): Record<string, FeatureCollection> {
-  const layers: Record<string, FeatureCollection> = {};
-
-  Object.values(mvt.layers).forEach((layer, i) => {
-    const features = Array.from(Array(layer._features.length), (v, i) => {
-      return layer.feature(i).toGeoJSON(165, 496, 10);
-    });
-    layers[layer.name] = {
-      type: 'FeatureCollection',
-      features,
-    };
+  res.send({
+    layers: geoJsonTile.layers,
+    viewBox: geoJsonTile.viewBox,
   });
-
-  return layers;
 }

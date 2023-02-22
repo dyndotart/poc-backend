@@ -65,10 +65,7 @@ export const spotifyApi = (() => {
     return null;
   }
 
-  async function search(
-    trackKeyword: string,
-    artistKeyword?: string
-  ): Promise<TTrackDto[]> {
+  async function getSearch(query: string): Promise<TTrackDto[]> {
     try {
       // Set up headers
       const accessToken = await getAccessToken();
@@ -76,9 +73,6 @@ export const spotifyApi = (() => {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       };
-      const query = `track:${trackKeyword}${
-        artistKeyword != null ? ` artist:${artistKeyword}` : ''
-      }`;
 
       // Sent request
       const response = await axios.get<TSpotifySearchResponseDto>(
@@ -93,7 +87,7 @@ export const spotifyApi = (() => {
         }
       );
 
-      return response.data.tracks.items;
+      return response.data?.tracks?.items ?? [];
     } catch (e) {
       mapAxiosError(e);
     }
@@ -101,5 +95,5 @@ export const spotifyApi = (() => {
     return [];
   }
 
-  return { getAccessToken, search };
+  return { getAccessToken, getSearch };
 })();

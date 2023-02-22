@@ -22,7 +22,7 @@
 - [Requests for operation (Billing)](https://documentation.maptiler.com/hc/en-us/articles/6576861156753-What-is-a-MapTiler-Cloud-request-)
 
 #### Pro
-- Free for none commercial
+- Free (100k requests per month)
 - Scalable as company
 - Supports zoom level so not every detail is queried
 
