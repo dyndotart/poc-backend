@@ -1,11 +1,11 @@
 import express from 'express';
-import config from '../config';
+import config from '../environment/config';
 import v1Routes from './v1';
 
 const router = express.Router();
 
 router.use('/v1', v1Routes);
-router.use(
+router.get(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {

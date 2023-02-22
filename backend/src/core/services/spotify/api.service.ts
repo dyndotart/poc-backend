@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { spotifyConfig } from '../../../config';
+import { spotifyConfig } from '../../../environment/config';
 import { mapAxiosError } from '../../../utils/map-error';
 import {
   TSpotifyAuthResponseDto,

@@ -1,5 +1,7 @@
+import { VectorTile } from '@mapbox/vector-tile';
 import express from 'express';
 import fs from 'fs';
+import { FeatureCollection } from 'geojson';
 import { renderByCompositionName } from '../../../core/media';
 import { mapTilerApi } from '../../../core/services/map/maptiler/api.service';
 import { spotifyApi } from '../../../core/services/spotify/api.service';
@@ -8,8 +10,6 @@ import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
 import { sendFile } from '../../../utils/send-file';
 import { RenderRawParams } from './types';
-// @ts-ignore
-import { VectorTile } from 'vector-tile-esm';
 
 export async function renderRawController(
   req: express.Request,
@@ -104,6 +104,8 @@ export async function renderCityMapController(
   res: express.Response
 ) {
   const vectorTileBuffer = await mapTilerApi.getVectorTileAsPBF(165, 396, 10);
+  if (vectorTileBuffer == null)
+    throw new AppError(500, 'Failed to resolve buffer!');
   const tileMVT = new VectorTile(vectorTileBuffer);
   const geoJson = mvtToGeoJson(tileMVT);
 
@@ -112,13 +114,21 @@ export async function renderCityMapController(
   // const jsondata = osmtogeojson(xmlData);
 
   // res.send(jsondata);
-  res.send(200);
+  res.send(geoJson);
 }
 
-function mvtToGeoJson(mvt: any, tileSize = 512) {
-  const layers: any = {};
-  Object.values(mvt.layers).forEach((layer: any) => {
-    layers[layer.name] = layer.toGeoJSON(tileSize);
+function mvtToGeoJson(mvt: VectorTile): Record<string, FeatureCollection> {
+  const layers: Record<string, FeatureCollection> = {};
+
+  Object.values(mvt.layers).forEach((layer, i) => {
+    const features = Array.from(Array(layer._features.length), (v, i) => {
+      return layer.feature(i).toGeoJSON(165, 496, 10);
+    });
+    layers[layer.name] = {
+      type: 'FeatureCollection',
+      features,
+    };
   });
+
   return layers;
 }

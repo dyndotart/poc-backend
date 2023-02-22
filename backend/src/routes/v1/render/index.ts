@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { STAGE } from '../../../config';
+import { STAGE } from '../../../environment/config';
 import { controllerWrapper } from '../../../utils/controller-wrapper';
 import {
   renderCityMapController,
@@ -19,7 +19,7 @@ router.get(
   controllerWrapper(renderSpotifyPlayerController)
 );
 router.get(`/map`, controllerWrapper(renderCityMapController));
-router.use(
+router.get(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {

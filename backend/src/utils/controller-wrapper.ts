@@ -1,6 +1,6 @@
 import express from 'express';
-import { STAGE } from '../config';
-import appConfig from '../config/app.config';
+import { STAGE } from '../environment/config';
+import appConfig from '../environment/config/app.config';
 import { AppError } from '../middlewares/error';
 
 export function controllerWrapper(

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { STAGE } from '../../config';
+import { STAGE } from '../../environment/config';
 import { controllerWrapper } from '../../utils/controller-wrapper';
 import authRoutes from './auth';
 import renderRoutes from './render';

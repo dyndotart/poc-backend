@@ -3,9 +3,9 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import logger from 'morgan';
-import config from './config';
+import config from './environment/config';
 import errorMiddlewares from './middlewares/error';
-import { rateLimiterMiddleware } from './middlewares/security/rate-limiter-middleware';
+import { rateLimiterMiddleware } from './middlewares/security/rate-limiter.middleware';
 import routes from './routes';
 
 // Init Express App

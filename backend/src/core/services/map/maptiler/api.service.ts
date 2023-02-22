@@ -1,5 +1,6 @@
 import axios from 'axios';
-import mapConfig from '../../../../config/map.config';
+import Pbf from 'pbf';
+import mapConfig from '../../../../environment/config/map.config';
 import { mapAxiosError } from '../../../../utils/map-error';
 
 export const mapTilerApi = (() => {
@@ -10,23 +11,25 @@ export const mapTilerApi = (() => {
     x: number,
     y: number,
     z: number
-  ): Promise<string | null> {
+  ): Promise<Pbf | null> {
     try {
       // Set up headers
       const headers = {};
 
       // Sent request
-      const response = await axios.get(
-        `${apiEndpoint}/tiles/v3/${z}/${x}/${y}.pbf`,
-        {
-          headers,
-          params: {
-            key: apiKey,
-          },
-        }
-      );
+      const endpoint = `${apiEndpoint}/tiles/v3/${z}/${x}/${y}.pbf`;
+      const response = await axios.get(endpoint, {
+        headers,
+        responseType: 'arraybuffer',
+        params: {
+          key: apiKey,
+        },
+      });
+      const data = response.data;
 
-      return response.data;
+      if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
+        return new Pbf(data);
+      }
     } catch (e) {
       mapAxiosError(e);
     }

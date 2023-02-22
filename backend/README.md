@@ -99,3 +99,6 @@ const opData = opResponse.data;
 
 ### Data Transfer Object (DTO)
 - Used to define types for data that is transferred between different layers of an application or between applications (OSI)
+
+### Adding Custom Type Definitions to a Third-Party Library
+- [Blog](https://www.detroitlabs.com/blog/adding-custom-type-definitions-to-a-third-party-library/)

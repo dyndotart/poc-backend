@@ -1,6 +1,6 @@
 import axios from 'axios';
 import crypto from 'crypto';
-import etsyConfig from '../../../config/etsy.config';
+import etsyConfig from '../../../environment/config/etsy.config';
 import { mapAxiosError } from '../../../utils/map-error';
 import { TEtsyPingResponseDto } from './types';
 

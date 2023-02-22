@@ -1,6 +1,6 @@
 import { createServer as createHttpServer } from 'http';
-import config from './config';
 import { initRemotionSSR } from './core/media';
+import config from './environment/config';
 
 export const { httpServer } = (() => {
   const PORT = config.app.port;
