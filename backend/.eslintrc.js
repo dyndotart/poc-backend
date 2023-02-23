@@ -17,7 +17,7 @@ module.exports = {
   settings: {
     tailwindConfigPath: './src/core/media/remotion/render/tailwind.config.js',
   },
-  ignorePatterns: ['.eslintrc.js'], // https://stackoverflow.com/questions/63002127/parsing-error-parseroptions-project-has-been-set-for-typescript-eslint-parser
+  ignorePatterns: ['.eslintrc.js', 'tile-stencil'], // https://stackoverflow.com/questions/63002127/parsing-error-parseroptions-project-has-been-set-for-typescript-eslint-parser
   rules: {
     'no-console': WARNING,
     'no-var': ERROR,

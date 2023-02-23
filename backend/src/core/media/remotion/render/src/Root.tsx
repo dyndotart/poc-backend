@@ -1,5 +1,6 @@
 import { Still } from 'remotion';
-import geojson from './resources/sampleGeoJson.json';
+import osmBrightStyle from './resources/osm-bright-style.json';
+import tile from './resources/tile-x165-y396-z10.json';
 import CityMapV1 from './stills/city-map-v1';
 import SpotifyPlayerV1 from './stills/spotify-player-v1';
 import './style.css';
@@ -13,7 +14,8 @@ export const RemotionRoot: React.FC = () => {
         width={1200}
         height={627}
         defaultProps={{
-          geojson: geojson as any,
+          geojson: tile as any,
+          mapStyle: osmBrightStyle as any,
         }}
       />
       <Still

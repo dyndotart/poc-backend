@@ -1,55 +1,37 @@
-import * as d3 from 'd3';
+import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import React from 'react';
+import { buildFeatureFilter, getStyleFuncs } from '../../core/map/tile-stencil';
+
+function findHighway(key: string) {
+  return [
+    'highway_motorway_inner',
+    'highway-motorway-casing',
+    'road_major_motorway',
+    'transportation',
+    'road_motorway_casing',
+  ].includes(key);
+}
 
 const CityMapV1: React.FC<TProps> = (props) => {
-  const { geojson } = props;
-  const svgRef = React.useRef();
+  const { geojson, mapStyle } = props;
 
   React.useEffect(() => {
-    console.log({ geojson });
-    async function renderMap() {
-      const geojsonInline = {
-        features: [
-          {
-            type: 'Feature',
-            properties: {
-              name: 'Africa',
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [-6, 36],
-                  [33, 30],
-                  [-6, 36],
-                ],
-              ],
-            },
-          },
-        ],
-      };
+    console.log({ geojson, mapStyle });
 
-      const chosenProjection = d3
-        .geoMercator()
-        .scale(600)
-        .translate([1300, 450]);
-      const geoGenerator = d3.geoPath().projection(chosenProjection);
-      const path = geoGenerator(JSON.stringify(geojsonInline) as any);
-
-      console.log({ path });
-
-      d3.select('#map')
-        .selectAll('path')
-        .data(geojsonInline.features)
-        .join('path')
-        .attr('d', path);
-    }
-    renderMap();
+    const highwayStyles = getStyleFuncs(
+      mapStyle.layers.find((layer: any) => findHighway(layer.id))
+    );
+    const highwayFilter = buildFeatureFilter(highwayStyles.filter);
+    const highwayData = {
+      type: 'FeatureCollection',
+      features: geojson.layers['transportation'].features.filter(highwayFilter),
+    };
+    console.log({ highwayData, highwayStyles });
   }, [geojson]);
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-red-900">
-      <svg id="map" width="960" height="500"></svg>
+      hello world
     </div>
   );
 };
@@ -57,5 +39,13 @@ const CityMapV1: React.FC<TProps> = (props) => {
 export default CityMapV1;
 
 type TProps = {
-  geojson: string;
+  geojson: {
+    layers: Record<string, FeatureCollection<Geometry, GeoJsonProperties>>;
+    viewBox: {
+      x: number;
+      y: number;
+      z: number;
+    };
+  };
+  mapStyle: any;
 };

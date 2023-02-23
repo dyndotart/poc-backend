@@ -2,7 +2,9 @@ import express from 'express';
 import fs from 'fs';
 import { renderByCompositionName } from '../../../core/media';
 import { mapService } from '../../../core/services/map';
+import { mapStyles } from '../../../core/services/map/styles';
 import { spotifyService } from '../../../core/services/spotify';
+import mapConfig from '../../../environment/config/map.config';
 import { AppError } from '../../../middlewares/error';
 import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
@@ -108,13 +110,16 @@ export async function renderCityMapController(
   });
   if (geoJsonTile == null) throw new AppError(500, 'Failed query Vector Tile!');
 
-  // TODO extend Vector Tile with the x, y and z
+  // Insert maptiler api key into style doc
+  const style = mapStyles[0].styles;
+  if (style.doc != null) {
+    for (const src of style.doc) {
+      if (src.url != null) {
+        src.url = src.url.replace(/{key}/, mapConfig.mapTiler.apiKey);
+      }
+    }
+  }
 
-  console.log({ geoJsonTile });
-
-  // const jsondata = osmtogeojson(xmlData);
-
-  // res.send(jsondata);
   res.send({
     layers: geoJsonTile.layers,
     viewBox: geoJsonTile.viewBox,
