@@ -1,6 +1,7 @@
+import * as d3Geo from 'd3-geo';
 import { Still } from 'remotion';
 import osmBrightStyle from './resources/osm-bright-style.json';
-import tile from './resources/tile-x165-y396-z10.json';
+import berlinTiles from './resources/tiles-long-1224183-lat37775.json';
 import CityMapV1 from './stills/city-map-v1';
 import SpotifyPlayerV1 from './stills/spotify-player-v1';
 import './style.css';
@@ -11,11 +12,17 @@ export const RemotionRoot: React.FC = () => {
       <Still
         id="city-map-v1"
         component={CityMapV1}
-        width={960}
+        width={600}
         height={600}
         defaultProps={{
-          geojson: tile as any,
-          mapStyle: osmBrightStyle as any,
+          tiles: berlinTiles as any,
+          style: osmBrightStyle as any,
+          projection: d3Geo
+            .geoMercator()
+            .center([-122.4183, 37.775]) // Long, Lat of Location to zoom out
+            .scale(Math.pow(2, 21) / (2 * Math.PI)) // Zoom
+            .translate([600 / 2, 600 / 2])
+            .precision(0),
         }}
       />
       <Still

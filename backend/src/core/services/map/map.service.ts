@@ -19,16 +19,16 @@ export const mapService = (() => {
     tiles: GeoJsonTile[];
     projection: d3Geo.GeoProjection;
   }> {
-    const width = 500;
-    const height = 500;
+    const width = 600;
+    const height = 600;
 
     // TODO calculate zoom
 
     // Calculate Projection
     const projection = d3Geo
       .geoMercator()
-      .center([long, lat])
-      .scale(Math.pow(2, 21) / (2 * Math.PI))
+      .center([long, lat]) // Long, Lat of Location to zoom out
+      .scale(Math.pow(2, 21) / (2 * Math.PI)) // Zoom
       .translate([width / 2, height / 2])
       .precision(0);
 

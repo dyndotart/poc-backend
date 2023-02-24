@@ -55,13 +55,14 @@ export async function renderSpotifyPlayerController(
       400,
       'Invalid image format - your URL path should end in .png or .jpeg!'
     );
+  const mimeType = getMimeType(imageFormat);
+
   const trackName = inputProps?.track;
   const artistName = inputProps?.artist;
   if (typeof trackName !== 'string' || typeof artistName !== 'string') {
     throw new AppError(400, 'Invalid track or artist provided!');
   }
 
-  const mimeType = getMimeType(imageFormat);
   const tracks = await spotifyService.searchTrackByName(trackName, artistName);
   if (tracks.length <= 0) {
     throw new AppError(
@@ -103,9 +104,28 @@ export async function renderCityMapController(
   req: express.Request,
   res: express.Response
 ) {
+  const inputProps = req.query;
+  const imageFormat = getImageType(req.params[RenderRawParams.format]);
+  if (imageFormat == null)
+    throw new AppError(
+      400,
+      'Invalid image format - your URL path should end in .png or .jpeg!'
+    );
+  const mimeType = getMimeType(imageFormat);
+
+  const rawLat = inputProps?.lat;
+  const rawLong = inputProps?.long;
+  if (typeof rawLat !== 'string' || typeof rawLong !== 'string') {
+    throw new AppError(400, 'Invalid lat or long provided!');
+  }
+  const lat = parseFloat(rawLat);
+  const long = parseFloat(rawLong);
+  console.log({ lat, long });
+
+  // Fetch tiles
   const { tiles, projection } = await mapService.getGeoJsonTilesByProjection(
-    13.404954,
-    52.520008
+    long,
+    lat
   );
   if (tiles == null || projection == null) {
     throw new AppError(500, 'Failed query Vector Tile!');
@@ -121,5 +141,22 @@ export async function renderCityMapController(
     }
   }
 
-  res.send(200);
+  // Set up headers
+  res.set('content-type', mimeType);
+
+  // Render image
+  const { outputPath, clear } = await renderByCompositionName(
+    'city-map-v1',
+    imageFormat,
+    {
+      tiles,
+      projection,
+      style,
+    }
+  );
+
+  // Send image to client
+  await sendFile(res, fs.createReadStream(outputPath));
+
+  await clear();
 }

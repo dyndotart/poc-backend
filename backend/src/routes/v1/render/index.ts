@@ -18,7 +18,10 @@ router.get(
   `/spotify.:${RenderRawParams.format}(png|jpe?g)`,
   controllerWrapper(renderSpotifyPlayerController)
 );
-router.get(`/map`, controllerWrapper(renderCityMapController));
+router.get(
+  `/map.:${RenderRawParams.format}(png|jpe?g)`,
+  controllerWrapper(renderCityMapController)
+);
 router.get(
   '/info',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
