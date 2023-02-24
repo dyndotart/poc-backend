@@ -103,12 +103,13 @@ export async function renderCityMapController(
   req: express.Request,
   res: express.Response
 ) {
-  const geoJsonTile = await mapService.getGeoJsonTile({
-    x: 165,
-    y: 396,
-    z: 10,
-  });
-  if (geoJsonTile == null) throw new AppError(500, 'Failed query Vector Tile!');
+  const { tiles, projection } = await mapService.getGeoJsonTilesByProjection(
+    13.404954,
+    52.520008
+  );
+  if (tiles == null || projection == null) {
+    throw new AppError(500, 'Failed query Vector Tile!');
+  }
 
   // Insert maptiler api key into style doc
   const style = mapStyles[0].styles;
@@ -120,8 +121,5 @@ export async function renderCityMapController(
     }
   }
 
-  res.send({
-    layers: geoJsonTile.layers,
-    viewBox: geoJsonTile.viewBox,
-  });
+  res.send(200);
 }

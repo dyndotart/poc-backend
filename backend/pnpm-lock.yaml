@@ -9,6 +9,7 @@ specifiers:
   '@remotion/renderer': ^3.3.44
   '@types/body-parser': ^1.19.2
   '@types/d3': ^7.4.0
+  '@types/d3-geo': ^2.0.1
   '@types/express': ^4.17.17
   '@types/geojson': ^7946.0.10
   '@types/mapbox__point-geometry': ^0.1.2
@@ -25,6 +26,8 @@ specifiers:
   css-loader: ^6.7.3
   d3: ^7.8.2
   d3-color: ^3.1.0
+  d3-geo: ^2.0.1
+  d3-tile: ^1.0.0
   dotenv: ^16.0.3
   eslint: ^8.34.0
   eslint-config-prettier: ^8.6.0
@@ -68,6 +71,8 @@ dependencies:
   css-loader: 6.7.3
   d3: 7.8.2
   d3-color: 3.1.0
+  d3-geo: 2.0.2
+  d3-tile: 1.0.0
   dotenv: 16.0.3
   eslint-plugin-tailwindcss-jsx: 0.0.1_7kw3g6rralp5ps6mg3uyzz6azm
   express: 4.18.2
@@ -92,6 +97,7 @@ devDependencies:
   '@remotion/eslint-config': 3.3.44_7kw3g6rralp5ps6mg3uyzz6azm
   '@types/body-parser': 1.19.2
   '@types/d3': 7.4.0
+  '@types/d3-geo': 2.0.4
   '@types/express': 4.17.17
   '@types/geojson': 7946.0.10
   '@types/mapbox__point-geometry': 0.1.2
@@ -974,6 +980,12 @@ packages:
 
   /@types/d3-format/3.0.1:
     resolution: {integrity: sha512-5KY70ifCCzorkLuIkDe0Z9YTf9RR2CjBX1iaJG+rgM/cPP+sO+q9YdQ9WdhQcgPj1EQiJ2/0+yUkkziTG6Lubg==}
+    dev: true
+
+  /@types/d3-geo/2.0.4:
+    resolution: {integrity: sha512-kP0LcPVN6P/42hmFt0kZm93YTscfawZo6tioL9y0Ya2l5rxaGoYrIG4zee+yJoK9cLTOc8E8S5ExqTEYVwjIkw==}
+    dependencies:
+      '@types/geojson': 7946.0.10
     dev: true
 
   /@types/d3-geo/3.0.3:
@@ -2127,6 +2139,12 @@ packages:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
     dev: true
 
+  /d3-array/2.12.1:
+    resolution: {integrity: sha512-B0ErZK/66mHtEsR1TkPEEkwdy+WDesimkM5gpZr5Dsg54BiTA5RXtYW5qTLIAcekaS9xfZrzBLF/OAkB3Qn1YQ==}
+    dependencies:
+      internmap: 1.0.1
+    dev: false
+
   /d3-array/3.2.2:
     resolution: {integrity: sha512-yEEyEAbDrF8C6Ob2myOBLjwBLck1Z89jMGFee0oPsn95GqjerpaOA4ch+vc2l0FNFFwMD5N7OCSEN5eAlsUbgQ==}
     engines: {node: '>=12'}
@@ -2225,6 +2243,12 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
+  /d3-geo/2.0.2:
+    resolution: {integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA==}
+    dependencies:
+      d3-array: 2.12.1
+    dev: false
+
   /d3-geo/3.1.0:
     resolution: {integrity: sha512-JEo5HxXDdDYXCaWdwLRt79y7giK8SbhZJbFWXqbRTolCHFI5jRqteLzCsq51NKbUoX0PjBVSohxrx+NoOUujYA==}
     engines: {node: '>=12'}
@@ -2293,6 +2317,10 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       d3-path: 3.1.0
+    dev: false
+
+  /d3-tile/1.0.0:
+    resolution: {integrity: sha512-79fnTKpPMPDS5xQ0xuS9ir0165NEwwkFpe/DSOmc2Gl9ldYzKKRDWogmTTE8wAJ8NA7PMapNfEcyKhI9Lxdu5Q==}
     dev: false
 
   /d3-time-format/4.1.0:
@@ -3374,6 +3402,10 @@ packages:
       has: 1.0.3
       side-channel: 1.0.4
     dev: true
+
+  /internmap/1.0.1:
+    resolution: {integrity: sha512-lDB5YccMydFBtasVtxnZ3MRBHuaoE8GKsppq+EchKL2U4nK/DmEpPHNH8MZe5HkMtpSiTSOZwfN0tzYjO/lJEw==}
+    dev: false
 
   /internmap/2.0.3:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}

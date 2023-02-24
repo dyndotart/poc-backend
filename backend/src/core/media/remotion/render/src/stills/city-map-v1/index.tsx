@@ -1,3 +1,4 @@
+import * as d3Geo from 'd3-geo';
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import React from 'react';
 import { buildFeatureFilter, getStyleFuncs } from '../../core/map/tile-stencil';
@@ -11,6 +12,8 @@ function findHighway(key: string) {
     'road_motorway_casing',
   ].includes(key);
 }
+const projection = d3Geo.geoMercator();
+const geoPath = d3Geo.geoPath(null);
 
 const CityMapV1: React.FC<TProps> = (props) => {
   const { geojson, mapStyle } = props;
@@ -30,8 +33,24 @@ const CityMapV1: React.FC<TProps> = (props) => {
   }, [geojson]);
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-red-900">
-      hello world
+    <div className="flex h-full w-full items-center justify-center bg-white">
+      <svg viewBox="0 0 600 600">
+        <path
+          fill="#eee"
+          d={geoPath(geojson.layers['boundary']) as string}
+        ></path>
+        <path
+          fill="none"
+          stroke="#aaa"
+          d={geoPath(geojson.layers['water']) as string}
+        ></path>
+        <path
+          fill="none"
+          stroke="#000"
+          d={geoPath(geojson.layers['transportation']) as string}
+          stroke-width="0.75"
+        ></path>
+      </svg>
     </div>
   );
 };

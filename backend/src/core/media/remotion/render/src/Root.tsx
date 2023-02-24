@@ -11,8 +11,8 @@ export const RemotionRoot: React.FC = () => {
       <Still
         id="city-map-v1"
         component={CityMapV1}
-        width={1200}
-        height={627}
+        width={960}
+        height={600}
         defaultProps={{
           geojson: tile as any,
           mapStyle: osmBrightStyle as any,

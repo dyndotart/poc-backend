@@ -55,7 +55,7 @@ const osmData = osmResponse.data;
 
 #### Pro
 - Free
-- Advanced querieing of vector data
+- Advanced querying of vector data
 
 #### Contra
 - Limited if currently high demand
@@ -89,12 +89,28 @@ const opResponse = await axios.post(
 const opData = opResponse.data;
 ```
 
+### Nextzen
+> https://github.com/tilezen/vector-datasource
+
+### Pro
+- Free
+- Multiple Tile Formats (GeoJSON, TopoJSON)
+
+#### Contra
+- Limited if currently high demand
+- Limited to 1 request per second
+- Not scalable (as community hosted)
+
+```ts
+https://tile.mapzen.com/mapzen/vector/v1/{layers}/{z}/{x}/{y}.{format}?api_key=your-mapzen-api-key
+```
+
 ### GPX to GeoJSON
 - [YouTube](https://www.youtube.com/watch?v=YwRGml8_3DU)
 
 ### Render Vector Tile
-- [Blog](https://observablehq.com/@jjhembd/vector-tile-rendering)
-
+- [Vector Tile Rendering](https://observablehq.com/@jjhembd/vector-tile-rendering)
+- [Mapbox Vector Tiles](https://observablehq.com/@d3/mapbox-vector-tiles?collection=@d3/d3-tile)
 ## Other
 
 ### Data Transfer Object (DTO)
