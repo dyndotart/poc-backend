@@ -77,7 +77,7 @@ export async function renderSpotifyPlayerController(
 
   // Render image
   const { outputPath, clear } = await renderByCompositionName(
-    'spotify-track-player',
+    'spotify-player-v1',
     imageFormat,
     {
       title: trackName,
@@ -140,6 +140,10 @@ export async function renderCityMapController(
       }
     }
   }
+  console.log('projection', {
+    lat: projection.center()[1],
+    long: projection.center()[0],
+  });
 
   // Set up headers
   res.set('content-type', mimeType);
@@ -150,7 +154,13 @@ export async function renderCityMapController(
     imageFormat,
     {
       tiles,
-      projection,
+      // Not passing projection class as that didn't work for whatever reason
+      projectionProps: {
+        center: [long, lat],
+        scale: Math.pow(2, 21) / (2 * Math.PI),
+        translate: [600 / 2, 600 / 2],
+        precision: 0,
+      },
       style,
     }
   );

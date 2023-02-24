@@ -1,4 +1,3 @@
-import * as d3Geo from 'd3-geo';
 import { Still } from 'remotion';
 import osmBrightStyle from './resources/osm-bright-style.json';
 import berlinTiles from './resources/tiles-long-1224183-lat37775.json';
@@ -17,12 +16,12 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           tiles: berlinTiles as any,
           style: osmBrightStyle as any,
-          projection: d3Geo
-            .geoMercator()
-            .center([-122.4183, 37.775]) // Long, Lat of Location to zoom out
-            .scale(Math.pow(2, 21) / (2 * Math.PI)) // Zoom
-            .translate([600 / 2, 600 / 2])
-            .precision(0),
+          projectionProps: {
+            center: [-122.4183, 37.775],
+            scale: Math.pow(2, 21) / (2 * Math.PI),
+            translate: [600 / 2, 600 / 2],
+            precision: 0,
+          },
         }}
       />
       <Still

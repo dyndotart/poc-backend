@@ -11,33 +11,28 @@ function findHighway(key: string) {
     'road_motorway_casing',
   ].includes(key);
 }
-const geoPath = d3Geo.geoPath(null);
 
 const CityMapV1: React.FC<TProps> = (props) => {
-  const { style, tiles, projection } = props;
+  const { style, tiles, projectionProps } = props;
+  const projection = d3Geo
+    .geoMercator()
+    .center(projectionProps.center)
+    .scale(projectionProps.scale)
+    .translate(projectionProps.translate)
+    .precision(projectionProps.precision);
   const geoPath = d3Geo.geoPath(projection);
 
-  React.useEffect(() => {
-    console.log({ tiles, style, projection });
-
-    // const highwayStyles = getStyleFuncs(
-    //   mapStyle.layers.find((layer: any) => findHighway(layer.id))
-    // );
-    // const highwayFilter = buildFeatureFilter(highwayStyles.filter);
-    // const highwayData = {
-    //   type: 'FeatureCollection',
-    //   features: geojson.layers['transportation'].features.filter(highwayFilter),
-    // };
-    // console.log({ highwayData, highwayStyles });
-  }, [tiles, style]);
-
-  if (tiles == null) {
+  if (tiles == null || projection == null) {
     return <div>Couldn't load tiles</div>;
   }
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-white">
-      <svg viewBox="0 0 500 500">
+      <p className="absolute top-0 left-0 bg-white">{`
+      Projection: ${projection.center()[0]}, ${projection.center()[1]} |
+      Layers: ${tiles.length}
+      `}</p>
+      <svg viewBox="0 0 600 600" className="bg-red-700">
         {tiles.map((tile) => (
           <>
             <path
@@ -73,6 +68,11 @@ type TProps = {
       z: number;
     };
   }[];
-  projection: d3Geo.GeoProjection;
+  projectionProps: {
+    center: [number, number];
+    scale: number;
+    translate: [number, number];
+    precision: number;
+  };
   style: any;
 };
