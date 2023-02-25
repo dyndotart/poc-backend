@@ -26,5 +26,6 @@ module.exports = {
     'no-undef': OFF,
     '@typescript-eslint/no-var-requires': WARNING,
     '@typescript-eslint/ban-ts-comment': WARNING,
+    '@typescript-eslint/no-empty-interface': OFF,
   },
 };

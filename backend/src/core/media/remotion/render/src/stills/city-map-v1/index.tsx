@@ -1,6 +1,7 @@
 import * as d3Geo from 'd3-geo';
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import React from 'react';
+import { Style as MapboxStyle } from '../../core/map/mapbox/types';
 
 function findHighway(key: string) {
   return [
@@ -27,14 +28,14 @@ const CityMapV1: React.FC<TProps> = (props) => {
     .precision(projectionProps.precision);
   const geoPath = d3Geo.geoPath(projection);
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    // TODO
+  }, []);
 
   console.log({ tiles });
   if (!Array.isArray(tiles) || tiles.length <= 0) {
     return <p>No tiles found</p>;
   }
-
-  function drawTile() {}
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-white">
@@ -88,5 +89,5 @@ type TProps = {
     translate: [number, number];
     precision: number;
   };
-  style: any;
+  style: MapboxStyle;
 };
