@@ -10,7 +10,7 @@ export const RemotionRoot: React.FC = () => {
     <>
       <Still
         id="city-map-v1"
-        component={CityMapV1}
+        component={CityMapV1 as any}
         width={600}
         height={600}
         defaultProps={{

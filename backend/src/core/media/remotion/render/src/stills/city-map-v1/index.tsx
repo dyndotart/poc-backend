@@ -14,6 +14,11 @@ function findHighway(key: string) {
 
 const CityMapV1: React.FC<TProps> = (props) => {
   const { style, tiles, projectionProps } = props;
+
+  // Define projection and geoPath, so that the map can be rendered
+  // in the wished specific projection at the wished place
+  // Note: Couldn't put these classes in a state as this threw an error.
+  // Thus they've to be reinitialized every render
   const projection = d3Geo
     .geoMercator()
     .center(projectionProps.center)
@@ -22,9 +27,14 @@ const CityMapV1: React.FC<TProps> = (props) => {
     .precision(projectionProps.precision);
   const geoPath = d3Geo.geoPath(projection);
 
-  if (tiles == null || projection == null) {
-    return <div>Couldn't load tiles</div>;
+  React.useEffect(() => {}, []);
+
+  console.log({ tiles });
+  if (!Array.isArray(tiles) || tiles.length <= 0) {
+    return <p>No tiles found</p>;
   }
+
+  function drawTile() {}
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-white">
@@ -34,23 +44,27 @@ const CityMapV1: React.FC<TProps> = (props) => {
       `}</p>
       <svg viewBox="0 0 600 600" className="bg-red-700">
         {tiles.map((tile) => (
-          <>
+          <g key={`x${tile.viewBox.x}y${tile.viewBox.y}z${tile.viewBox.z}`}>
             <path
-              fill="#eee"
-              d={geoPath(tile.layers['boundary']) as string}
+              key={'boundary'}
+              fill="#7CFC00"
+              stroke="#7CFC00"
+              d={geoPath(tile.layers['building']) as string}
             ></path>
             <path
-              fill="none"
-              stroke="#aaa"
+              key={'water'}
+              fill="#0096FF"
+              stroke="#0096FF"
               d={geoPath(tile.layers['water']) as string}
             ></path>
             <path
+              key={'transportation'}
               fill="none"
               stroke="#000"
               d={geoPath(tile.layers['transportation']) as string}
-              stroke-width="0.75"
+              strokeWidth="0.75"
             ></path>
-          </>
+          </g>
         ))}
       </svg>
     </div>

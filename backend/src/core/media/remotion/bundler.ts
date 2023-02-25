@@ -1,4 +1,4 @@
-import { bundle } from '@remotion/bundler';
+import { bundle as bundleRemotion } from '@remotion/bundler';
 import path from 'path';
 import { webpackOverride } from './render/src/webpack-override';
 
@@ -13,11 +13,20 @@ export const { getWebpackBundleLocation, initRemotionSSR } = (() => {
 
   async function getWebpackBundleLocation(reload = false): Promise<string> {
     if (webpackBundleLocation != null && !reload) return webpackBundleLocation;
+    return bundle();
+  }
 
-    // Load Remotion Webpack bundle
+  async function bundle(): Promise<string> {
+    // Bundle Remotion via Webpack
     const remotionPath = path.resolve(path.join(__dirname, ENTRY));
-    const bundleLocation = await bundle(remotionPath, () => undefined, {
-      webpackOverride: (config) => webpackOverride(config),
+    const onProgress = (progress: number) => {
+      console.log(`Webpack bundling progress: ${progress}%`);
+    };
+    const bundleLocation = await bundleRemotion({
+      entryPoint: remotionPath,
+      onProgress,
+      webpackOverride: (config: any) => webpackOverride(config),
+      enableCaching: true,
     });
 
     console.log(

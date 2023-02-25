@@ -2,6 +2,7 @@ import { getCompositions, renderStill } from '@remotion/renderer';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { appConfig, STAGE } from '../../../environment/config';
 import { hashObject } from '../../../utils/hash-object';
 import { getWebpackBundleLocation } from './bundler';
 
@@ -50,6 +51,7 @@ export async function renderByCompositionName(
       output: outputPath,
       inputProps,
       imageFormat,
+      dumpBrowserLogs: [STAGE.DEV, STAGE.LOCAL].includes(appConfig.stage),
     });
   }
 
