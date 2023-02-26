@@ -8,24 +8,25 @@ function getColor() {
   return `hsl(${360 * Math.random()}, 100%, 75%)`;
 }
 
-const CityMapV1: React.FC<TProps> = (props) => {
+const MapV1: React.FC<TProps> = (props) => {
   const { style, tiles, projectionProps } = props;
-
-  // Define projection and geoPath, so that the map can be rendered
-  // in the wished specific projection at the wished place
-  // Note: Couldn't put these classes in a state as this threw an error.
-  // Thus they've to be reinitialized every render
-  const projection = d3Geo
-    .geoMercator()
-    .center(projectionProps.center)
-    .scale(projectionProps.scale)
-    .translate(projectionProps.translate)
-    .precision(projectionProps.precision);
-  const geoPath = d3Geo.geoPath(projection);
+  const projection = React.useMemo(
+    () =>
+      d3Geo
+        .geoMercator()
+        .center(projectionProps.center)
+        .scale(projectionProps.scale)
+        .translate(projectionProps.translate)
+        .precision(projectionProps.precision),
+    [projectionProps]
+  );
+  const geoPath = React.useMemo(() => d3Geo.geoPath(projection), [projection]);
   const parsedStyle = {
     ...style,
     layers: style.layers.map(tileStencil.getStyleFuncs),
   };
+
+  console.log('Tiles', tiles);
 
   if (!Array.isArray(tiles) || tiles.length <= 0) {
     return <p>No tiles found</p>;
@@ -40,23 +41,28 @@ const CityMapV1: React.FC<TProps> = (props) => {
       </p>
       <svg viewBox="0 0 600 600">
         {tiles.map((tile) => {
-          // const highwayStyle = parsedStyle.layers.find((layer) =>
-          //   [
-          //     'highway_motorway_inner',
-          //     'highway-motorway-casing',
-          //     'road_major_motorway',
-          //     'transportation',
-          //     'road_motorway_casing',
-          //   ].includes(layer.id)
-          // );
-          // const highwayStyleFilter = tileStencil.buildFeatureFilter(
-          //   highwayStyle.filter
-          // );
-          // const highwayData: FeatureCollection = {
-          //   type: 'FeatureCollection',
-          //   features: tile.layers['transportation'].features.filter(highwayStyleFilter),
-          // };
-          // console.log({ tile, highwayStyle, highwayStyleFilter, highwayData });
+          // TODO apply mapbox styles
+          // Based on:
+          // https://observablehq.com/@jjhembd/vector-tile-rendering
+
+          const highwayStyle = parsedStyle.layers.find((layer) =>
+            [
+              'highway_motorway_inner',
+              'highway-motorway-casing',
+              'road_major_motorway',
+              'transportation',
+              'road_motorway_casing',
+            ].includes(layer.id)
+          );
+          const highwayStyleFilter = tileStencil.buildFeatureFilter(
+            highwayStyle.filter
+          );
+          const highwayData: FeatureCollection = {
+            type: 'FeatureCollection',
+            features:
+              tile.layers['transportation'].features.filter(highwayStyleFilter),
+          };
+          console.log({ tile, highwayStyle, highwayStyleFilter, highwayData });
 
           return (
             <g
@@ -72,9 +78,12 @@ const CityMapV1: React.FC<TProps> = (props) => {
               ></path>
               <path
                 fill="none"
-                stroke="#000"
-                strokeWidth="0.75"
-                d={geoPath(tile.layers['transportation']) as string}
+                stroke={highwayStyle.paint['line-color'](tile.viewBox.z)}
+                strokeWidth={highwayStyle.paint['line-width'](tile.viewBox.z)}
+                strokeMiterlimit={highwayStyle.layout['line-miter-limit'](
+                  tile.viewBox.z
+                )}
+                d={geoPath(highwayData) as string}
               ></path>
             </g>
           );
@@ -84,7 +93,7 @@ const CityMapV1: React.FC<TProps> = (props) => {
   );
 };
 
-export default CityMapV1;
+export default MapV1;
 
 type TProps = {
   tiles: {

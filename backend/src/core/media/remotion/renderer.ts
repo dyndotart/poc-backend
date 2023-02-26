@@ -52,6 +52,7 @@ export async function renderByCompositionName(
       inputProps,
       imageFormat,
       dumpBrowserLogs: [STAGE.DEV, STAGE.LOCAL].includes(appConfig.stage),
+      scale: 3,
     });
   }
 

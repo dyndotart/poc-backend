@@ -2,47 +2,12 @@ import express from 'express';
 import fs from 'fs';
 import { renderByCompositionName } from '../../../core/media';
 import { mapService } from '../../../core/services/map';
-import { mapStyles } from '../../../core/services/map/styles';
 import { spotifyService } from '../../../core/services/spotify';
-import mapConfig from '../../../environment/config/map.config';
 import { AppError } from '../../../middlewares/error';
 import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
 import { sendFile } from '../../../utils/send-file';
 import { RenderRawParams } from './types';
-
-export async function renderRawController(
-  req: express.Request,
-  res: express.Response
-) {
-  const inputProps = req.query;
-  const compositionName = req.params[RenderRawParams.compositionname];
-  const imageFormat = getImageType(req.params[RenderRawParams.format]);
-  if (imageFormat == null)
-    throw new AppError(
-      400,
-      'Invalid image format - your URL path should end in .png or .jpeg!'
-    );
-  const mimeType = getMimeType(imageFormat);
-
-  // Set up headers
-  res.set('content-type', mimeType);
-
-  // Render image
-  const { outputPath, clear } = await renderByCompositionName(
-    compositionName,
-    imageFormat,
-    inputProps
-  );
-
-  // Send image to client
-  await sendFile(res, fs.createReadStream(outputPath));
-
-  // TODO Cache sent image
-  // await saveToCache(hash, await fs.promises.readFile(output));
-
-  await clear();
-}
 
 export async function renderSpotifyPlayerController(
   req: express.Request,
@@ -100,7 +65,7 @@ export async function renderSpotifyPlayerController(
   await clear();
 }
 
-export async function renderCityMapController(
+export async function renderSimpleCityMapController(
   req: express.Request,
   res: express.Response
 ) {
@@ -122,7 +87,6 @@ export async function renderCityMapController(
   const lat = parseFloat(rawLat);
   const long = parseFloat(rawLong);
   const zoom = typeof rawZoom === 'string' ? parseFloat(rawZoom) : null;
-  console.log({ lat, long });
 
   // Fetch tiles
   const { tiles, projection } = await mapService.getGeoJsonTilesByProjection(
@@ -134,22 +98,12 @@ export async function renderCityMapController(
     throw new AppError(500, 'Failed query Vector Tile!');
   }
 
-  // Insert maptiler api key into style doc
-  const style = mapStyles[0].styles;
-  if (style.doc != null) {
-    for (const src of style.doc) {
-      if (src.url != null) {
-        src.url = src.url.replace(/{key}/, mapConfig.mapTiler.apiKey);
-      }
-    }
-  }
-
   // Set up headers
   res.set('content-type', mimeType);
 
   // Render image
   const { outputPath, clear } = await renderByCompositionName(
-    'city-map-v1',
+    'simple-city-map-v1',
     imageFormat,
     {
       tiles,
@@ -159,7 +113,6 @@ export async function renderCityMapController(
         translate: projection.translate(),
         precision: projection.precision(),
       },
-      style,
     }
   );
 
