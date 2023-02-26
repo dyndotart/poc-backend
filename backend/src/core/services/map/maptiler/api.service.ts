@@ -5,7 +5,7 @@ import { mapAxiosError } from '../../../../utils/map-error';
 import { TViewBox } from '../types';
 
 export const mapTilerApi = (() => {
-  const apiKey = mapConfig.mapTiler.apiKey;
+  const apiKey = mapConfig.mapTiler.auth.apiKey;
   const apiEndpoint = mapConfig.mapTiler.baseUrl;
 
   async function getVectorTileAsPBF(viewBox: TViewBox): Promise<Pbf | null> {

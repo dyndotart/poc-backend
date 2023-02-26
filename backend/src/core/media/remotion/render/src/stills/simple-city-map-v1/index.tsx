@@ -24,26 +24,35 @@ const SimpleCityMapV1: React.FC<TProps> = (props) => {
 
   return (
     <div className="flex h-full w-full items-center justify-center bg-white">
-      <p className="absolute top-0 left-0 bg-white">
-        Tile 1: ${JSON.stringify(tiles[0].viewBox)}
-        <br />
-        Projection: ${JSON.stringify(projectionProps)}
-      </p>
       <svg viewBox="0 0 600 600">
         {tiles.map((tile) => {
           return (
             <g key={`x${tile.viewBox.x}y${tile.viewBox.y}z${tile.viewBox.z}`}>
+              <path fill="#EAF3E7" d={geoPath(tile.layers['park']) as string} />
               <path
-                fill="#eee"
-                stroke="#aaa"
+                fill="#DADADA"
+                stroke="#AAAAAA"
+                strokeWidth="0.25"
+                d={geoPath(tile.layers['building']) as string}
+              />
+              <path
+                fill="#E7E9F3"
+                // stroke="#AAAAAA"
+                strokeWidth={0.75}
                 d={geoPath(tile.layers['water']) as string}
-              ></path>
+              />
               <path
                 fill="none"
-                stroke="#000"
-                strokeWidth="0.75"
+                stroke="#E7E9F3"
+                strokeWidth={0.75}
+                d={geoPath(tile.layers['waterway']) as string}
+              />
+              <path
+                fill="none"
+                stroke="#000000"
+                strokeWidth={0.75}
                 d={geoPath(tile.layers['transportation']) as string}
-              ></path>
+              />
             </g>
           );
         })}

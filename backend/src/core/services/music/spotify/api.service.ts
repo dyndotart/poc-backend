@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { spotifyConfig } from '../../../environment/config';
-import { mapAxiosError } from '../../../utils/map-error';
+import { musicConfig } from '../../../../environment/config';
+import { mapAxiosError } from '../../../../utils/map-error';
 import {
   TSpotifyAuthResponseDto,
   TSpotifySearchResponseDto,
@@ -8,10 +8,10 @@ import {
 } from './types';
 
 export const spotifyApi = (() => {
-  const clientId = spotifyConfig.auth.clientId;
-  const clientSecret = spotifyConfig.auth.clientSecret;
-  const authEndpoint = spotifyConfig.auth.endpoint;
-  const apiEndpoint = spotifyConfig.baseUrl;
+  const clientId = musicConfig.spotify.auth.clientId;
+  const clientSecret = musicConfig.spotify.auth.clientSecret;
+  const authEndpoint = musicConfig.spotify.auth.endpoint;
+  const apiEndpoint = musicConfig.spotify.baseUrl;
 
   let accessToken: string | null = null;
   let expiresAt = 0;
@@ -53,7 +53,7 @@ export const spotifyApi = (() => {
       expiresAt = Date.now() + (data.expires_in - puffer) * 1000;
 
       console.log(
-        `Successfully fetched new Access Token that will expire at ${new Date(
+        `Successfully fetched new Spotify Access Token that will expire at ${new Date(
           expiresAt
         ).toLocaleTimeString()}`
       );

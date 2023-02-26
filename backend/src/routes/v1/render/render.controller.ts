@@ -2,7 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import { renderByCompositionName } from '../../../core/media';
 import { mapService } from '../../../core/services/map';
-import { spotifyService } from '../../../core/services/spotify';
+import { spotifyService } from '../../../core/services/music/spotify';
 import { AppError } from '../../../middlewares/error';
 import { getImageType, getMimeType } from '../../../utils/image-types';
 import { randomNumber } from '../../../utils/random';
