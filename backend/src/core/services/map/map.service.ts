@@ -14,30 +14,33 @@ export const mapService = (() => {
 
   async function getGeoJsonTilesByProjection(
     long: number,
-    lat: number
+    lat: number,
+    zoom = 21
   ): Promise<{
     tiles: GeoJsonTile[];
     projection: d3Geo.GeoProjection;
   }> {
+    // TODO pass as props.. size of canvas
     const width = 600;
     const height = 600;
-
-    // TODO calculate zoom
 
     // Calculate Projection
     const projection = d3Geo
       .geoMercator()
       .center([long, lat]) // Long, Lat of Location to zoom out
-      .scale(Math.pow(2, 21) / (2 * Math.PI)) // Zoom
+      .scale(Math.pow(2, zoom) / (2 * Math.PI))
       .translate([width / 2, height / 2])
       .precision(0);
 
     // Calculate Tile view boxes to represent the projection
     const getTileViewBoxes = d3Tile
       .tile()
+      .tileSize(512)
       .size([width, height])
-      .scale(projection.scale() * 2 * Math.PI)
-      .translate(projection([0, 0]));
+      .scale(Math.pow(2, zoom))
+      // .scale(projection.scale() * 2 * Math.PI)
+      .translate(projection([0, 0]))
+      .zoomDelta(1);
     const tileViewBoxes = getTileViewBoxes();
 
     // Fetch Tiles to the Tile view boxes

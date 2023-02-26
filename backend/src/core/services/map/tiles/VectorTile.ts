@@ -1,5 +1,5 @@
 import { VectorTile as MapboxVectorTile } from '@mapbox/vector-tile';
-import { FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 import Pbf from 'pbf';
 import { TViewBox } from '../types';
 import { GeoJsonTile } from './GeoJsonTile';
@@ -12,21 +12,30 @@ export class VectorTile extends MapboxVectorTile {
     this.viewBox = viewBox;
   }
 
-  public toGeoJson() {
-    const layers: Record<string, FeatureCollection> = {};
+  public toGeoJson(): GeoJsonTile {
+    const newLayers: Record<string, FeatureCollection> = {};
 
-    Object.values(this.layers).forEach((layer) => {
-      const features = Array.from(Array(layer._features.length), (v, i) => {
-        return layer
+    // Map layers
+    for (const layerKey of Object.keys(this.layers)) {
+      const layer = this.layers[layerKey];
+      const features: Feature[] = [];
+
+      // Map features of layer
+      for (let i = 0; i < layer.length; ++i) {
+        const feature = layer
           .feature(i)
           .toGeoJSON(this.viewBox.x, this.viewBox.y, this.viewBox.z);
-      });
-      layers[layer.name] = {
+        if (feature != null) {
+          features.push(feature);
+        }
+      }
+
+      newLayers[layer.name] = {
         type: 'FeatureCollection',
         features,
       };
-    });
+    }
 
-    return new GeoJsonTile(layers, this.viewBox);
+    return new GeoJsonTile(newLayers, this.viewBox);
   }
 }
