@@ -13,7 +13,7 @@ export const mapTilerApi = (() => {
       // Set up headers
       const headers = {};
 
-      // Sent request
+      // Send request
       const endpoint = `${apiEndpoint}/tiles/v3/${viewBox.z}/${viewBox.x}/${viewBox.y}.pbf`;
       const response = await axios.get(endpoint, {
         headers,

@@ -9,7 +9,7 @@ export default {
     auth: {
       clientId: spotifyClientId,
       clientSecret: spotifyClientSecret,
-      endpoint: 'https://accounts.spotify.com/api/token',
+      tokenEndpoint: 'https://accounts.spotify.com/api/token',
     },
     baseUrl: 'https://api.spotify.com/v1',
   },
@@ -18,7 +18,7 @@ export default {
       clientId: geniusClientId,
       clientSecret: geniusClientSecret,
       accessToken: geniusAccessToken, // API doesn't support Client Credentials Flow, so I'm directly using the access token that will never expire
-      endpoint: 'https://api.genius.com/oauth/authorize',
+      authorizeEndpoint: 'https://api.genius.com/oauth/authorize',
     },
     baseUrl: 'https://api.genius.com',
   },

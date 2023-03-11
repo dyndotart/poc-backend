@@ -10,7 +10,7 @@ import {
 export const spotifyApi = (() => {
   const clientId = musicConfig.spotify.auth.clientId;
   const clientSecret = musicConfig.spotify.auth.clientSecret;
-  const authEndpoint = musicConfig.spotify.auth.endpoint;
+  const tokenEndpoint = musicConfig.spotify.auth.tokenEndpoint;
   const apiEndpoint = musicConfig.spotify.baseUrl;
 
   let accessToken: string | null = null;
@@ -40,9 +40,9 @@ export const spotifyApi = (() => {
       // Set up body
       const body = 'grant_type=client_credentials';
 
-      // Sent request
+      // Send request
       const response = await axios.post<TSpotifyAuthResponseDto>(
-        authEndpoint,
+        tokenEndpoint,
         body,
         { headers }
       );
@@ -74,7 +74,7 @@ export const spotifyApi = (() => {
         'Content-Type': 'application/json',
       };
 
-      // Sent request
+      // Send request
       const response = await axios.get<TSpotifySearchResponseDto>(
         `${apiEndpoint}/search`,
         {
