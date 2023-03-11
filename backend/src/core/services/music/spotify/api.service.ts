@@ -18,8 +18,9 @@ export const spotifyApi = (() => {
   const puffer = 60 * 5; // s
 
   async function getAccessToken(force = false): Promise<string | null> {
-    if (Date.now() < expiresAt && accessToken != null && !force)
+    if (Date.now() < expiresAt && accessToken != null && !force) {
       return accessToken;
+    }
     return await fetchAccessToken();
   }
 

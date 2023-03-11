@@ -2,7 +2,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import etsyConfig from '../../../environment/config/etsy.config';
 import { mapAxiosError } from '../../../utils/map-error';
-import { TEtsyPingResponseDto } from './types';
+import { TEtsyAuthResponseDto, TEtsyPingResponseDto } from './types';
 
 export const etsyApi = (() => {
   const keyString = etsyConfig.auth.keyString;
@@ -11,9 +11,14 @@ export const etsyApi = (() => {
   const apiEndpoint = etsyConfig.baseUrl;
   const redirectUrl = etsyConfig.auth.redirectUrl;
 
+  const codeVerifiers: Record<string, string> = {};
+
   let accessToken: string | null = null;
-  let expiresAt = 0;
-  const puffer = 60 * 5; // s
+  let accessTokenExpiresAt = 0;
+  const accessTokenPuffer = 60 * 5; // s
+
+  let refreshToken: string | null = null; // 90 day life span
+  let refreshTokenExpiresAt = 0;
 
   // https://developers.etsy.com/documentation/tutorials/quickstart#test-your-api-key
   async function ping(): Promise<boolean> {
@@ -38,10 +43,7 @@ export const etsyApi = (() => {
 
   // Etsy doesn't support client_credentials flow: https://github.com/etsy/open-api/issues/146
   // https://developers.etsy.com/documentation/tutorials/quickstart#generate-the-pkce-code-challenge
-  function generatePKCECodeChallengeUri(): {
-    url: string;
-    codeVerifier: string;
-  } {
+  function generatePKCECodeChallengeUri(): string {
     // The next two functions help us generate the code challenge
     // required by Etsy’s OAuth implementation.
     const base64URLEncode = (buffer: Buffer): string =>
@@ -62,22 +64,80 @@ export const etsyApi = (() => {
     // the values needed for our OAuth authorization grant.
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
     const state = Math.random().toString(36).substring(7);
+    codeVerifiers[state] = codeVerifier;
 
-    return {
-      url: `${challengeEndpoint}?response_type=code&redirect_uri=${redirectUrl}&scope=email_r&client_id=${keyString}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`,
-      codeVerifier,
-    };
+    return `${challengeEndpoint}?response_type=code&redirect_uri=${redirectUrl}&scope=email_r&client_id=${keyString}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+  }
+
+  async function getAccessToken(force = false): Promise<string | null> {
+    if (accessToken != null && Date.now() < accessTokenExpiresAt && !force) {
+      return accessToken;
+    }
+    if (refreshToken != null && Date.now() < refreshTokenExpiresAt) {
+      return await fetchAccessTokenByRefreshToken(refreshToken);
+    } else {
+      console.error(
+        'Refresh Token was expired and the access needs to be regranted via authorization code.'
+      );
+    }
+    return null;
+  }
+
+  async function fetchAccessTokenByRefreshToken(
+    refreshToken: string
+  ): Promise<string | null> {
+    try {
+      // Set up body
+      const body = {
+        grant_type: 'refresh_token',
+        client_id: keyString,
+        refresh_token: refreshToken,
+      };
+
+      // Send request
+      const response = await axios.post<TEtsyAuthResponseDto>(
+        tokenEndpoint,
+        body
+      );
+      const data = response.data;
+      if (
+        data.access_token == null ||
+        data.expires_in == null ||
+        data.refresh_token
+      )
+        return null;
+
+      accessToken = data.access_token;
+      accessTokenExpiresAt =
+        Date.now() + (data.expires_in - accessTokenPuffer) * 1000;
+      if (data.refresh_token !== refreshToken) {
+        refreshToken = data.refresh_token;
+        refreshTokenExpiresAt = Date.now() + 89 * 24 * 60 * 60 * 1000;
+      }
+
+      console.log(
+        `Successfully fetched new Etsy Access Token (with Refresh Token) that will expire at ${new Date(
+          accessTokenExpiresAt
+        ).toLocaleTimeString()}`
+      );
+
+      return accessToken;
+    } catch (e) {
+      mapAxiosError(e);
+    }
+    return null;
   }
 
   async function fetchAccessTokenByAuthorizationCode(
     code: string,
-    codeVerifier: string
+    state: string
   ): Promise<string | null> {
     try {
-      // Set up headers
-      const headers = {
-        'Content-Type': 'application/json',
-      };
+      const codeVerifier = codeVerifiers[state];
+      if (codeVerifier == null) {
+        console.error('No matching code verifier found!');
+        return null;
+      }
 
       // Set up body
       const body = {
@@ -89,16 +149,30 @@ export const etsyApi = (() => {
       };
 
       // Send request
-      const response = await axios.post(tokenEndpoint, body, { headers });
+      const response = await axios.post<TEtsyAuthResponseDto>(
+        tokenEndpoint,
+        body
+      );
       const data = response.data;
-      if (data.access_token == null || data.expires_in == null) return null;
+      if (
+        data.access_token == null ||
+        data.expires_in == null ||
+        data.refresh_token
+      )
+        return null;
 
       accessToken = data.access_token;
-      expiresAt = Date.now() + (data.expires_in - puffer) * 1000;
+      accessTokenExpiresAt =
+        Date.now() + (data.expires_in - accessTokenPuffer) * 1000;
+      refreshToken = data.refresh_token;
+      if (data.refresh_token !== refreshToken) {
+        refreshToken = data.refresh_token;
+        refreshTokenExpiresAt = Date.now() + 89 * 24 * 60 * 60 * 1000;
+      }
 
       console.log(
         `Successfully fetched new Etsy Access Token that will expire at ${new Date(
-          expiresAt
+          accessTokenExpiresAt
         ).toLocaleTimeString()}`
       );
 
@@ -109,5 +183,9 @@ export const etsyApi = (() => {
     return null;
   }
 
-  return { ping, generatePKCECodeChallengeUri };
+  return {
+    ping,
+    generatePKCECodeChallengeUri,
+    fetchAccessTokenByAuthorizationCode,
+  };
 })();
