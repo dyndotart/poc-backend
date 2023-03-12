@@ -20,3 +20,13 @@ export type TRedirectParametersErrorDto = {
   error_description: string;
   error_uri: string;
 };
+
+export type TGetMeResponseDto = {
+  user_id: string;
+  shop_id: string;
+};
+
+export type TGetShopReceiptsDto = {
+  count: number;
+  results: any[];
+};

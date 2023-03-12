@@ -2,7 +2,12 @@ import axios from 'axios';
 import crypto from 'crypto';
 import etsyConfig from '../../../environment/config/etsy.config';
 import { mapAxiosError } from '../../../utils/map-error';
-import { TEtsyAuthResponseDto, TEtsyPingResponseDto } from './types';
+import {
+  TEtsyAuthResponseDto,
+  TEtsyPingResponseDto,
+  TGetMeResponseDto,
+  TGetShopReceiptsDto,
+} from './types';
 
 export const etsyApi = (() => {
   const keyString = etsyConfig.auth.keyString;
@@ -44,6 +49,8 @@ export const etsyApi = (() => {
   // Etsy doesn't support client_credentials flow: https://github.com/etsy/open-api/issues/146
   // https://developers.etsy.com/documentation/tutorials/quickstart#generate-the-pkce-code-challenge
   function generatePKCECodeChallengeUri(): string {
+    const scopes = ['email_r', 'transactions_r', 'transactions_w', 'shops_r'];
+
     // The next two functions help us generate the code challenge
     // required by Etsy’s OAuth implementation.
     const base64URLEncode = (buffer: Buffer): string =>
@@ -66,7 +73,16 @@ export const etsyApi = (() => {
     const state = Math.random().toString(36).substring(7);
     codeVerifiers[state] = codeVerifier;
 
-    return `${challengeEndpoint}?response_type=code&redirect_uri=${redirectUrl}&scope=email_r&client_id=${keyString}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    return `${challengeEndpoint}
+    ?response_type=code
+    &redirect_uri=${redirectUrl}
+    &scope=${scopes.join('%20')}
+    &client_id=${keyString}
+    &state=${state}
+    &code_challenge=${codeChallenge}
+    &code_challenge_method=S256`
+      .replace(/\s+/g, '')
+      .trim();
   }
 
   async function getAccessToken(force = false): Promise<string | null> {
@@ -183,9 +199,59 @@ export const etsyApi = (() => {
     return null;
   }
 
+  async function getMe(): Promise<TGetMeResponseDto | null> {
+    try {
+      // Set up headers
+      const accessToken = await getAccessToken();
+      const headers = {
+        'x-api-key': keyString,
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      // Send request
+      const response = await axios.get<TGetMeResponseDto>(
+        `${apiEndpoint}/users/me`,
+        { headers }
+      );
+
+      return response?.data;
+    } catch (e) {
+      mapAxiosError(e);
+    }
+
+    return null;
+  }
+
+  async function getShopReceipts(shopId: string): Promise<any> {
+    try {
+      // Set up headers
+      const accessToken = await getAccessToken();
+      const headers = {
+        'x-api-key': keyString,
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      // Send request
+      const response = await axios.get<TGetShopReceiptsDto>(
+        `${apiEndpoint}/shops/${shopId}/receipts`,
+        { headers }
+      );
+      const data = response.data;
+
+      console.log({ data });
+      return data.results;
+    } catch (e) {
+      mapAxiosError(e);
+    }
+
+    return [];
+  }
+
   return {
     ping,
     generatePKCECodeChallengeUri,
     fetchAccessTokenByAuthorizationCode,
+    getMe,
+    getShopReceipts,
   };
 })();

@@ -1,12 +1,12 @@
 import express from 'express';
-import { etsyApi } from '../../../../core/services/etsy/api.service';
+import { etsyService } from '../../../../core/services/etsy';
 import { AppError } from '../../../../middlewares/error';
 
 export async function pingController(
   req: express.Request,
   res: express.Response
 ) {
-  const success = await etsyApi.ping();
+  const success = await etsyService.canCommunicateWithEtsy();
   res.send(success);
 }
 
@@ -15,7 +15,7 @@ export async function getAuthChallengeController(
   res: express.Response
 ) {
   // Test ping to see whether Etsy can be reached with the app credentials
-  const success = await etsyApi.ping();
+  const success = await etsyService.canCommunicateWithEtsy();
   if (!success) {
     throw new AppError(
       500,
@@ -24,7 +24,7 @@ export async function getAuthChallengeController(
   }
 
   // Build Challenge URI the user has to call in order to authenticate
-  const challenge = await etsyApi.generatePKCECodeChallengeUri();
+  const challenge = etsyService.getPKCECodeChallengeUri();
 
   res.send(challenge);
 }
@@ -49,7 +49,15 @@ export async function authRedirectController(
     return;
   }
 
-  await etsyApi.fetchAccessTokenByAuthorizationCode(code, state);
+  await etsyService.initAccessToken(code, state);
 
   res.send(200);
+}
+
+export async function getShopReceiptsController(
+  req: express.Request,
+  res: express.Response
+) {
+  const receipts = await etsyService.getReceipts();
+  res.send(receipts);
 }
