@@ -173,7 +173,7 @@ export const etsyApi = (() => {
       if (
         data.access_token == null ||
         data.expires_in == null ||
-        data.refresh_token
+        data.refresh_token == null
       )
         return null;
 
@@ -185,6 +185,9 @@ export const etsyApi = (() => {
         refreshToken = data.refresh_token;
         refreshTokenExpiresAt = Date.now() + 89 * 24 * 60 * 60 * 1000;
       }
+
+      // Remove code verifier as the code can only be used once
+      delete codeVerifiers[state];
 
       console.log(
         `Successfully fetched new Etsy Access Token that will expire at ${new Date(
@@ -210,7 +213,7 @@ export const etsyApi = (() => {
 
       // Send request
       const response = await axios.get<TGetMeResponseDto>(
-        `${apiEndpoint}/users/me`,
+        `${apiEndpoint}/application/users/me`,
         { headers }
       );
 
@@ -233,7 +236,7 @@ export const etsyApi = (() => {
 
       // Send request
       const response = await axios.get<TGetShopReceiptsDto>(
-        `${apiEndpoint}/shops/${shopId}/receipts`,
+        `${apiEndpoint}/application/shops/${shopId}/receipts`,
         { headers }
       );
       const data = response.data;

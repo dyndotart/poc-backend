@@ -49,6 +49,8 @@ export async function authRedirectController(
     return;
   }
 
+  console.log('jeff');
+
   await etsyService.initAccessToken(code, state);
 
   res.send(200);
